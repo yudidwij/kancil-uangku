@@ -1,11 +1,15 @@
 const DashboardPage = (() => {
   const {
+    addChild,
     animatePercent,
+    applyImportPayload,
     createExportPayload,
     data,
     buildChildHref,
     formatCurrency,
     getChildBundle,
+    resetDemoData,
+    setActiveChild,
     getCompletionStats,
     getLatestUnlockedBadge,
     getRewardSummary,
@@ -15,6 +19,7 @@ const DashboardPage = (() => {
     setClassName,
     setHTML,
     setText,
+    updateChildProfile,
     validateImportPayload,
   } = window.KancilApp;
 
@@ -368,6 +373,171 @@ const DashboardPage = (() => {
     }
   }
 
+  function getAvatarColorSelection() {
+    return document.querySelector('input[name="avatar-color"]:checked')?.value || "#5ECFC1";
+  }
+
+  function openChildManagementPanel(config) {
+    const panel = document.getElementById("child-management-panel");
+    const modeInput = document.getElementById("child-management-mode");
+    const childIdInput = document.getElementById("child-management-child-id");
+    const title = document.getElementById("child-management-title");
+    const description = document.getElementById("child-management-description");
+    const nameInput = document.getElementById("child-name-input");
+    const focusInput = document.getElementById("child-focus-input");
+    const saveButton = document.getElementById("save-child-button");
+    const activateButton = document.getElementById("activate-child-button");
+    const panelStatus = document.getElementById("child-panel-status");
+
+    if (!panel || !modeInput || !childIdInput || !nameInput || !focusInput) return;
+
+    panel.classList.remove("hidden");
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    if (config.mode === "edit" && config.child) {
+      modeInput.value = "edit";
+      childIdInput.value = config.child.id;
+      title.textContent = `Kelola Profil ${config.child.name}`;
+      description.textContent =
+        "Perbarui nama tampilan, fokus belajar, atau pilih lagi anak aktif untuk dashboard ini.";
+      nameInput.value = config.child.name;
+      focusInput.value = config.child.focusText;
+      saveButton.textContent = "Simpan Perubahan";
+      panelStatus.textContent =
+        "Perubahan profil akan langsung dipakai di Parent Dashboard dan Child View pada browser ini.";
+
+      document
+        .querySelectorAll('input[name="avatar-color"]')
+        .forEach((input) => {
+          input.checked = input.value === config.child.avatarColor;
+        });
+
+      if (activateButton) {
+        activateButton.classList.toggle("hidden", config.child.activeStatus);
+      }
+      return;
+    }
+
+    modeInput.value = "add";
+    childIdInput.value = "";
+    title.textContent = "Tambah Profil Anak";
+    description.textContent =
+      "Tambahkan profil baru untuk mulai memantau misi, target tabungan, dan 3 kantong.";
+    nameInput.value = "";
+    focusInput.value = "";
+    saveButton.textContent = "Simpan Profil Anak";
+    panelStatus.textContent =
+      "Profil baru akan otomatis mendapat target tabungan awal, ringkasan 3 kantong, dan empty state tugas mingguan.";
+
+    document
+      .querySelectorAll('input[name="avatar-color"]')
+      .forEach((input, index) => {
+        input.checked = index === 0;
+      });
+
+    if (activateButton) {
+      activateButton.classList.add("hidden");
+    }
+  }
+
+  function closeChildManagementPanel() {
+    const panel = document.getElementById("child-management-panel");
+    if (panel) {
+      panel.classList.add("hidden");
+    }
+  }
+
+  function bindChildManagementUI(selectedChildId) {
+    const addButtons = [
+      document.getElementById("open-add-child-button"),
+      document.getElementById("empty-add-child-button"),
+    ].filter(Boolean);
+    const manageButton = document.getElementById("manage-profile-button");
+    const cancelButton = document.getElementById("cancel-child-management-button");
+    const activateButton = document.getElementById("activate-child-button");
+    const form = document.getElementById("child-management-form");
+    const modeInput = document.getElementById("child-management-mode");
+    const childIdInput = document.getElementById("child-management-child-id");
+    const nameInput = document.getElementById("child-name-input");
+    const focusInput = document.getElementById("child-focus-input");
+    const panelStatus = document.getElementById("child-panel-status");
+
+    addButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        openChildManagementPanel({ mode: "add" });
+      });
+    });
+
+    if (manageButton) {
+      manageButton.addEventListener("click", () => {
+        const activeChild = data.children.find((child) => child.id === selectedChildId);
+        if (!activeChild) return;
+        openChildManagementPanel({ mode: "edit", child: activeChild });
+      });
+    }
+
+    if (cancelButton) {
+      cancelButton.addEventListener("click", closeChildManagementPanel);
+    }
+
+    if (activateButton) {
+      activateButton.addEventListener("click", () => {
+        const childId = childIdInput?.value;
+        if (!childId) return;
+
+        setActiveChild(childId);
+        window.location.href = buildChildHref("parent-dashboard.html", childId);
+      });
+    }
+
+    if (form && modeInput && childIdInput && nameInput && focusInput) {
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const name = nameInput.value.trim();
+        const focusText = focusInput.value.trim();
+        const avatarColor = getAvatarColorSelection();
+
+        if (!name) {
+          if (panelStatus) {
+            panelStatus.textContent = "Nama anak masih kosong. Tambahkan nama singkat dulu, lalu simpan lagi.";
+          }
+          nameInput.focus();
+          return;
+        }
+
+        if (modeInput.value === "edit") {
+          const updated = updateChildProfile(childIdInput.value, {
+            name,
+            focusText,
+            avatarColor,
+          });
+
+          if (!updated) {
+            if (panelStatus) {
+              panelStatus.textContent = "Profil belum berhasil diperbarui. Coba buka panel lagi dan ulangi.";
+            }
+            return;
+          }
+
+          window.location.href = buildChildHref("parent-dashboard.html", childIdInput.value);
+          return;
+        }
+
+        if (data.children.length >= 10) {
+          if (panelStatus) {
+            panelStatus.textContent =
+              "Batas demo saat ini adalah 10 profil anak agar dashboard tetap rapi dan mudah ditinjau.";
+          }
+          return;
+        }
+
+        const nextChildId = addChild({ name, focusText, avatarColor });
+        window.location.href = buildChildHref("parent-dashboard.html", nextChildId);
+      });
+    }
+  }
+
   function showImportFeedback(mode, title, note) {
     const feedback = document.getElementById("import-feedback");
     if (!feedback) return;
@@ -442,17 +612,22 @@ const DashboardPage = (() => {
             return;
           }
 
+          applyImportPayload(parsed);
           updateDataStatus(
             "success",
-            "Import berhasil dibaca.",
-            "Data ditampilkan sebagai simulasi validasi tanpa menyimpan perubahan.",
+            "Import berhasil diterapkan.",
+            "Snapshot data baru sudah dipakai di browser ini.",
             `Terakhir divalidasi: ${new Date().toLocaleString("id-ID")}`
           );
           showImportFeedback(
             "success",
             "File import valid",
-            validation.message
+            `${validation.message} Halaman akan memuat ulang untuk menampilkan data terbaru.`
           );
+          window.setTimeout(() => {
+            const nextChildId = parsed.selectedChildId || selectedChildId;
+            window.location.href = buildChildHref("parent-dashboard.html", nextChildId);
+          }, 700);
         } catch (error) {
           updateDataStatus(
             "error",
@@ -498,16 +673,35 @@ const DashboardPage = (() => {
     if (confirmResetButton && resetConfirmation) {
       confirmResetButton.addEventListener("click", () => {
         resetConfirmation.classList.add("hidden");
+        resetDemoData();
         updateDataStatus(
           "success",
-          "Reset simulasi selesai.",
-          "Panel kembali ke kondisi demo awal tanpa menghapus penyimpanan permanen.",
+          "Reset data selesai.",
+          "Semua perubahan lokal sudah kembali ke demo awal.",
           `Terakhir direset simulasi: ${new Date().toLocaleString("id-ID")}`
         );
         showImportFeedback(
           "success",
-          "Reset simulasi berhasil",
-          "Fase ini hanya mensimulasikan flow reset. Data demo sumber tetap sama."
+          "Reset data berhasil",
+          "Dashboard akan dimuat ulang dengan data demo awal."
+        );
+        window.setTimeout(() => {
+          window.location.href = buildChildHref("parent-dashboard.html", getSelectedChildId());
+        }, 700);
+      });
+    }
+  }
+
+  function bindInformationalButtons() {
+    const monthlySwitchButton = document.getElementById("monthly-switch-button");
+
+    if (monthlySwitchButton) {
+      monthlySwitchButton.addEventListener("click", () => {
+        updateDataStatus(
+          "neutral",
+          "Mode demo aktif.",
+          "Rekap saat ini baru menampilkan Juli 2026 sesuai data contoh yang tersedia.",
+          "Tidak ada perubahan data yang disimpan."
         );
       });
     }
@@ -544,6 +738,7 @@ const DashboardPage = (() => {
 
   function init() {
     const childId = getSelectedChildId();
+    if (!childId) return;
     const weekNumber = getSelectedWeekNumber();
     const bundle = getChildBundle(childId);
     const weekTasks = getWeekTasks(bundle.tasks, weekNumber);
@@ -559,7 +754,9 @@ const DashboardPage = (() => {
     renderMonthlyRecap(bundle);
     renderCharts(bundle);
     renderCertificate(bundle);
+    bindChildManagementUI(childId);
     bindExportImportUI(childId, weekNumber);
+    bindInformationalButtons();
     bindCertificatePreviewUI();
   }
 
