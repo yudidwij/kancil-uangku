@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kancil Uangku - Parent Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+      }
+
+      .font-heading {
+        font-family: "Poppins", sans-serif;
+      }
+
+      .progress-animate,
+      .chart-animate {
+        transition: width 900ms ease, height 900ms ease;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        .progress-animate,
+        .chart-animate {
+          transition: none;
+        }
+      }
+
+      @media print {
+        body.certificate-print {
+          background: #ffffff;
+        }
+
+        body.certificate-print header,
+        body.certificate-print main > section:not(.certificate-print-section) {
+          display: none !important;
+        }
+
+        body.certificate-print .certificate-print-section {
+          margin-top: 0 !important;
+          display: block !important;
+        }
+
+        body.certificate-print #certificate-preview-card {
+          box-shadow: none !important;
+          border-color: rgba(255, 201, 74, 0.9) !important;
+          break-inside: avoid;
+        }
+
+        body.certificate-print #certificate-print-actions,
+        body.certificate-print #certificate-preview-note {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-[#FFF8F0] text-[#2E4374]">
+    <!-- Header / Top Navigation -->
+    <header class="bg-[#2E4374] text-white shadow-lg shadow-[#2E4374]/10">
+      <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div class="flex items-start gap-3">
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/12 text-2xl" aria-hidden="true">
+              🦌
+            </div>
+            <div>
+              <p class="text-sm font-medium uppercase tracking-[0.2em] text-white/70">
+                Kancil Uangku
+              </p>
+              <h1 class="font-heading text-2xl font-semibold sm:text-3xl">
+                Dashboard Orang Tua
+              </h1>
+              <p class="mt-1 max-w-2xl text-sm text-white/80 sm:text-base">
+                Pantau kebiasaan finansial anak, misi mingguan, dan progres
+                tabungan dalam satu tampilan yang rapi.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:justify-end">
+            <div class="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm">
+              <p class="text-white/65">Anak aktif</p>
+              <p id="active-child-name" class="mt-1 font-semibold">-</p>
+            </div>
+            <div class="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm">
+              <p class="text-white/65">Periode</p>
+              <p id="active-period" class="mt-1 font-semibold">-</p>
+            </div>
+            <a
+              id="child-view-link"
+              class="inline-flex min-h-[44px] items-center justify-center rounded-[18px] bg-[#FF8C61] px-5 py-3 text-sm font-semibold text-white shadow-md shadow-[#FF8C61]/30 transition hover:bg-[#f97f53] focus:outline-none focus:ring-4 focus:ring-white/30"
+              href="child-view.html"
+            >
+              Lihat Child View
+            </a>
+            <button
+              class="min-h-[44px] rounded-[18px] border border-white/20 bg-white px-5 py-3 text-sm font-semibold text-[#2E4374] transition hover:bg-[#FFF8F0] focus:outline-none focus:ring-4 focus:ring-white/20"
+              type="button"
+            >
+              Tambah Anak
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      <!-- Quick Stats -->
+      <section aria-labelledby="quick-stats-title">
+        <div class="mb-4 flex items-end justify-between gap-4">
+          <div>
+            <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/60">
+              Ringkasan Cepat
+            </p>
+            <h2 id="quick-stats-title" class="font-heading text-xl font-semibold sm:text-2xl">
+              Status Minggu Ini
+            </h2>
+          </div>
+          <p class="hidden text-sm text-[#2E4374]/70 md:block">
+            Orang tua dapat memahami kondisi anak kurang dari 30 detik.
+          </p>
+        </div>
+
+        <div class="-mx-4 flex gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:px-0 lg:grid-cols-4 xl:grid-cols-6">
+          <article class="min-w-[220px] rounded-2xl bg-white p-5 shadow-sm shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8">
+            <p class="text-sm text-[#2E4374]/65">Tugas minggu ini</p>
+            <p id="stat-weekly-tasks" class="mt-3 text-3xl font-semibold text-[#2E4374]">-</p>
+            <p id="stat-weekly-tasks-note" class="mt-2 text-sm text-[#2E4374]/70">-</p>
+          </article>
+          <article class="min-w-[220px] rounded-2xl bg-white p-5 shadow-sm shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8">
+            <p class="text-sm text-[#2E4374]/65">Completion rate</p>
+            <p id="stat-completion-rate" class="mt-3 text-3xl font-semibold text-[#FF8C61]">-</p>
+            <p id="stat-completion-note" class="mt-2 text-sm text-[#2E4374]/70">-</p>
+          </article>
+          <article class="min-w-[220px] rounded-2xl bg-white p-5 shadow-sm shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8">
+            <p class="text-sm text-[#2E4374]/65">Total tabungan</p>
+            <p id="stat-total-savings" class="mt-3 text-3xl font-semibold text-[#5ECFC1]">-</p>
+            <p id="stat-total-savings-note" class="mt-2 text-sm text-[#2E4374]/70">-</p>
+          </article>
+          <article class="min-w-[220px] rounded-2xl bg-white p-5 shadow-sm shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8">
+            <p class="text-sm text-[#2E4374]/65">Badge terbaru</p>
+            <p id="stat-latest-badge" class="mt-3 text-2xl font-semibold text-[#FFC94A]">-</p>
+            <p id="stat-latest-badge-note" class="mt-2 text-sm text-[#2E4374]/70">-</p>
+          </article>
+          <article class="min-w-[220px] rounded-2xl bg-white p-5 shadow-sm shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8">
+            <p class="text-sm text-[#2E4374]/65">Streak aktif</p>
+            <p id="stat-current-streak" class="mt-3 text-3xl font-semibold text-[#FFC94A]">-</p>
+            <p id="stat-current-streak-note" class="mt-2 text-sm text-[#2E4374]/70">-</p>
+          </article>
+          <article class="min-w-[220px] rounded-2xl bg-white p-5 shadow-sm shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8">
+            <p class="text-sm text-[#2E4374]/65">Anak aktif</p>
+            <p id="stat-active-children" class="mt-3 text-3xl font-semibold text-[#2E4374]">-</p>
+            <p id="stat-active-children-note" class="mt-2 text-sm text-[#2E4374]/70">-</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Child Selector -->
+      <section class="mt-8" aria-labelledby="child-selector-title">
+        <div class="mb-4 flex items-center justify-between gap-4">
+          <div>
+            <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/60">
+              Multi Anak
+            </p>
+            <h2 id="child-selector-title" class="font-heading text-xl font-semibold sm:text-2xl">
+              Pilih Anak Aktif
+            </h2>
+          </div>
+          <button
+            class="min-h-[44px] rounded-[18px] border border-[#2E4374]/15 bg-white px-4 py-3 text-sm font-semibold text-[#2E4374] shadow-sm shadow-[#2E4374]/5 transition hover:bg-[#EAF0FB] focus:outline-none focus:ring-4 focus:ring-[#2E4374]/10"
+            type="button"
+          >
+            Kelola Profil
+          </button>
+        </div>
+
+        <div id="child-selector-list" class="grid gap-4 md:grid-cols-2 xl:grid-cols-4"></div>
+
+        <article id="child-selector-empty-state" class="mt-4 hidden rounded-2xl border border-dashed border-[#2E4374]/20 bg-[#EAF0FB] p-5 shadow-sm shadow-[#2E4374]/5">
+          <div class="flex h-full flex-col justify-between gap-4 sm:flex-row sm:items-center">
+            <div>
+              <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/55">
+                Empty State
+              </p>
+              <h3 class="mt-2 font-heading text-lg font-semibold">Tambah Anak Baru</h3>
+              <p class="mt-2 text-sm text-[#2E4374]/70">
+                Kancil belum punya teman belajar baru. Tambahkan profil anak
+                berikutnya saat siap.
+              </p>
+            </div>
+            <button
+              class="min-h-[44px] rounded-[18px] bg-[#FF8C61] px-4 py-3 text-sm font-semibold text-white shadow-md shadow-[#FF8C61]/25 transition hover:bg-[#f97f53] focus:outline-none focus:ring-4 focus:ring-[#FF8C61]/20"
+              type="button"
+            >
+              Tambah Anak
+            </button>
+          </div>
+        </article>
+      </section>
+
+      <!-- Weekly Task Tracker + Reward Summary -->
+      <section class="mt-8 grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
+        <article
+          class="rounded-3xl bg-white p-5 shadow-sm shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8 sm:p-6"
+          aria-labelledby="weekly-task-title"
+        >
+          <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/60">
+                Weekly Tracking
+              </p>
+              <h2 id="weekly-task-title" class="font-heading text-xl font-semibold sm:text-2xl">
+                Progress Minggu Ini
+              </h2>
+              <p class="mt-2 text-sm text-[#2E4374]/70">
+                Status tugas dibagi per minggu agar mudah dipantau dan ditinjau.
+              </p>
+            </div>
+            <div id="week-tabs" class="flex flex-wrap gap-2"></div>
+          </div>
+
+          <div class="mt-5 rounded-2xl bg-[#FFF8F0] p-4">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <p class="text-sm text-[#2E4374]/65">Penyelesaian minggu ini</p>
+                <p id="weekly-progress-title" class="mt-1 text-xl font-semibold text-[#2E4374]">-</p>
+              </div>
+              <p id="weekly-progress-percent" class="rounded-full bg-white px-3 py-1 text-sm font-semibold text-[#FF8C61]">
+                -
+              </p>
+            </div>
+            <div class="mt-4 h-3 rounded-full bg-white">
+              <div id="weekly-progress-bar" class="progress-animate h-3 rounded-full bg-[#5ECFC1]" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="mt-5 overflow-hidden rounded-2xl border border-[#2E4374]/8">
+            <div class="hidden grid-cols-[1.8fr_1.3fr_1fr_1fr] bg-[#EAF0FB] px-4 py-3 text-sm font-semibold text-[#2E4374] md:grid">
+              <div>Tugas</div>
+              <div>Reward</div>
+              <div>Status</div>
+              <div>Catatan</div>
+            </div>
+            <div id="weekly-task-list" class="divide-y divide-[#2E4374]/8"></div>
+          </div>
+
+          <div id="weekly-empty-state" class="mt-5 hidden rounded-2xl border border-dashed border-[#2E4374]/20 bg-[#EAF0FB] p-4">
+            <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/55">
+              Empty State
+            </p>
+            <div class="mt-2 flex items-start gap-3">
+              <div class="text-2xl" aria-hidden="true">🦌</div>
+              <div>
+                <p class="font-semibold">Misi minggu ini masih kosong.</p>
+                <p class="mt-1 text-sm text-[#2E4374]/70">
+                  Buat misi kecil pertama bersama Kancil agar orang tua dapat
+                  memantau progress minggu ini.
+                </p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <aside class="space-y-6">
+          <article class="rounded-3xl bg-white p-5 shadow-sm shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8 sm:p-6">
+            <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/60">
+              Reward Summary
+            </p>
+            <h2 class="font-heading mt-2 text-xl font-semibold">Ringkasan Reward</h2>
+            <div class="mt-5 space-y-4">
+              <div class="rounded-2xl bg-[#FFF6D9] p-4">
+                <p class="text-sm text-[#2E4374]/70">Reward uang minggu ini</p>
+                <p id="reward-money" class="mt-2 text-2xl font-semibold text-[#2E4374]">-</p>
+              </div>
+              <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+                <div class="rounded-2xl bg-[#EAF0FB] p-4">
+                  <p class="text-sm text-[#2E4374]/70">Reward non-uang</p>
+                  <p id="reward-non-money" class="mt-2 font-semibold">-</p>
+                </div>
+                <div class="rounded-2xl bg-[#FFF0EA] p-4">
+                  <p class="text-sm text-[#2E4374]/70">Reward badge</p>
+                  <p id="reward-badge" class="mt-2 font-semibold">-</p>
+                </div>
+              </div>
+              <div class="rounded-2xl border border-[#2E4374]/10 p-4">
+                <p class="text-sm font-semibold text-[#2E4374]">Catatan orang tua</p>
+                <p id="reward-note" class="mt-2 text-sm text-[#2E4374]/70">-</p>
+              </div>
+            </div>
+          </article>
+        </aside>
+      </section>
+
+      <!-- Goal & Savings Summary + Three Pockets -->
+      <section class="mt-8 grid gap-6 lg:grid-cols-2" aria-label="Goal and pockets section">
+        <article class="rounded-3xl bg-white p-5 shadow-sm shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8 sm:p-6">
+          <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/60">
+            Goal & Savings
+          </p>
+          <h2 class="font-heading mt-2 text-xl font-semibold sm:text-2xl">
+            Ringkasan Target Tabungan
+          </h2>
+          <div class="mt-5 rounded-3xl bg-[#EAFBF8] p-5">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p class="text-sm text-[#2E4374]/65">Target aktif</p>
+                <h3 id="goal-name" class="font-heading mt-1 text-2xl font-semibold">-</h3>
+                <p id="goal-target-date" class="mt-1 text-sm text-[#2E4374]/70">-</p>
+              </div>
+              <div class="rounded-2xl bg-white px-4 py-3 text-right">
+                <p class="text-sm text-[#2E4374]/65">Terkumpul</p>
+                <p id="goal-current-amount" class="mt-1 text-xl font-semibold text-[#5ECFC1]">-</p>
+              </div>
+            </div>
+            <div class="mt-5 h-4 rounded-full bg-white">
+              <div id="goal-progress-bar" class="progress-animate h-4 rounded-full bg-[#5ECFC1]" style="width: 0%;"></div>
+            </div>
+            <div class="mt-3 flex items-center justify-between text-sm text-[#2E4374]/70">
+              <span id="goal-percent-summary">-</span>
+              <span id="goal-remaining">-</span>
+            </div>
+            <div class="mt-5 rounded-2xl border border-white/80 bg-white/70 p-4 text-sm text-[#2E4374]/75">
+              Milestone berikutnya: Kancil akan tampil di sertifikat saat target
+              ini selesai.
+            </div>
+          </div>
+
+          <div id="goal-empty-state" class="mt-5 hidden rounded-2xl border border-dashed border-[#2E4374]/20 bg-[#EAFBF8] p-4">
+            <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/55">
+              Empty State
+            </p>
+            <p class="mt-2 font-semibold">Belum ada target tabungan baru.</p>
+            <p class="mt-1 text-sm text-[#2E4374]/70">
+              Kancil siap bantu menabung. Tentukan tujuan berikutnya setelah
+              target aktif selesai.
+            </p>
+          </div>
+        </article>
+
+        <article class="rounded-3xl bg-white p-5 shadow-sm shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8 sm:p-6">
+          <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/60">
+            3 Kantong
+          </p>
+          <h2 class="font-heading mt-2 text-xl font-semibold sm:text-2xl">
+            Tabung, Belanja, Berbagi
+          </h2>
+          <div class="mt-5 grid gap-4 sm:grid-cols-3">
+            <article class="rounded-3xl bg-[#EAFBF8] p-4">
+              <p class="text-sm font-medium text-[#2E4374]/65">Tabung</p>
+              <p id="pocket-save-amount" class="mt-3 text-2xl font-semibold text-[#2E4374]">-</p>
+              <p id="pocket-save-note" class="mt-2 text-sm text-[#2E4374]/70">-</p>
+            </article>
+            <article class="rounded-3xl bg-[#FFF0EA] p-4">
+              <p class="text-sm font-medium text-[#2E4374]/65">Belanja</p>
+              <p id="pocket-spend-amount" class="mt-3 text-2xl font-semibold text-[#2E4374]">-</p>
+              <p id="pocket-spend-note" class="mt-2 text-sm text-[#2E4374]/70">-</p>
+            </article>
+            <article class="rounded-3xl bg-[#F2ECFA] p-4">
+              <p class="text-sm font-medium text-[#2E4374]/65">Berbagi</p>
+              <p id="pocket-share-amount" class="mt-3 text-2xl font-semibold text-[#2E4374]">-</p>
+              <p id="pocket-share-note" class="mt-2 text-sm text-[#2E4374]/70">-</p>
+            </article>
+          </div>
+
+          <div class="mt-5">
+            <div class="flex h-4 overflow-hidden rounded-full bg-[#EAF0FB]">
+              <div id="pocket-save-bar" class="progress-animate h-full bg-[#5ECFC1]" style="width: 0%;"></div>
+              <div id="pocket-spend-bar" class="progress-animate h-full bg-[#FF8C61]" style="width: 0%;"></div>
+              <div id="pocket-share-bar" class="progress-animate h-full bg-[#B39DDB]" style="width: 0%;"></div>
+            </div>
+            <div class="mt-3 grid grid-cols-3 gap-3 text-sm text-[#2E4374]/70">
+              <p id="pocket-save-percent">-</p>
+              <p id="pocket-spend-percent">-</p>
+              <p id="pocket-share-percent">-</p>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- Badge & Streak Summary + Monthly Recap -->
+      <section class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1.4fr)]">
+        <article class="rounded-3xl bg-white p-5 shadow-sm shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8 sm:p-6">
+          <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/60">
+            Achievement
+          </p>
+          <h2 class="font-heading mt-2 text-xl font-semibold sm:text-2xl">
+            Badge & Streak
+          </h2>
+          <div class="mt-5 grid gap-4 md:grid-cols-2">
+            <article class="rounded-3xl bg-[#FFF6D9] p-4">
+              <p class="text-sm text-[#2E4374]/65">Badge terbaru</p>
+              <h3 id="latest-badge-name" class="font-heading mt-2 text-lg font-semibold">-</h3>
+              <p id="latest-badge-description" class="mt-2 text-sm text-[#2E4374]/70">-</p>
+            </article>
+            <article class="rounded-3xl bg-[#FFF0EA] p-4">
+              <p class="text-sm text-[#2E4374]/65">Streak aktif</p>
+              <p id="current-streak-large" class="mt-2 text-4xl font-semibold text-[#2E4374]">-</p>
+              <p id="best-streak-text" class="mt-2 text-sm text-[#2E4374]/70">-</p>
+            </article>
+          </div>
+          <div class="mt-4 rounded-2xl border border-[#2E4374]/10 p-4">
+            <p class="text-sm font-semibold text-[#2E4374]">Ringkasan badge</p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <span id="badge-unlocked-count" class="rounded-full bg-[#FFF6D9] px-3 py-1 text-sm font-semibold text-[#2E4374]">-</span>
+              <span id="badge-locked-count" class="rounded-full bg-[#EAF0FB] px-3 py-1 text-sm font-semibold text-[#2E4374]">-</span>
+              <span id="badge-sharing-count" class="rounded-full bg-[#F2ECFA] px-3 py-1 text-sm font-semibold text-[#2E4374]">-</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="rounded-3xl bg-white p-5 shadow-sm shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8 sm:p-6">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/60">
+                Monthly Recap
+              </p>
+              <h2 id="monthly-recap-title" class="font-heading mt-2 text-xl font-semibold sm:text-2xl">
+                -
+              </h2>
+            </div>
+            <button
+              class="min-h-[44px] rounded-[18px] border border-[#2E4374]/15 bg-[#EAF0FB] px-4 py-3 text-sm font-semibold text-[#2E4374]"
+              type="button"
+            >
+              Ganti Bulan
+            </button>
+          </div>
+
+          <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <article class="rounded-2xl bg-[#FFF8F0] p-4">
+              <p class="text-sm text-[#2E4374]/65">Tugas selesai</p>
+              <p id="monthly-completed-tasks" class="mt-2 text-2xl font-semibold">-</p>
+            </article>
+            <article class="rounded-2xl bg-[#FFF8F0] p-4">
+              <p class="text-sm text-[#2E4374]/65">Total reward</p>
+              <p id="monthly-total-reward" class="mt-2 text-2xl font-semibold">-</p>
+            </article>
+            <article class="rounded-2xl bg-[#FFF8F0] p-4">
+              <p class="text-sm text-[#2E4374]/65">Total tabungan</p>
+              <p id="monthly-total-saved" class="mt-2 text-2xl font-semibold text-[#5ECFC1]">-</p>
+            </article>
+            <article class="rounded-2xl bg-[#FFF8F0] p-4">
+              <p class="text-sm text-[#2E4374]/65">Total belanja</p>
+              <p id="monthly-total-spent" class="mt-2 text-2xl font-semibold text-[#FF8C61]">-</p>
+            </article>
+            <article class="rounded-2xl bg-[#FFF8F0] p-4">
+              <p class="text-sm text-[#2E4374]/65">Total berbagi</p>
+              <p id="monthly-total-shared" class="mt-2 text-2xl font-semibold text-[#B39DDB]">-</p>
+            </article>
+            <article class="rounded-2xl bg-[#FFF8F0] p-4">
+              <p class="text-sm text-[#2E4374]/65">Best streak</p>
+              <p id="monthly-best-streak" class="mt-2 text-2xl font-semibold text-[#FFC94A]">-</p>
+            </article>
+          </div>
+        </article>
+      </section>
+
+      <!-- Simple HTML/CSS Chart Visualization -->
+      <section class="mt-8 rounded-3xl bg-white p-5 shadow-sm shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8 sm:p-6" aria-labelledby="chart-title">
+        <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/60">
+              Visualization
+            </p>
+            <h2 id="chart-title" class="font-heading mt-2 text-xl font-semibold sm:text-2xl">
+              Visualisasi Progress
+            </h2>
+          </div>
+          <p class="text-sm text-[#2E4374]/70">
+            Grafik sederhana berbasis HTML/CSS agar ringan dan mudah diteruskan.
+          </p>
+        </div>
+
+        <div class="mt-6 grid gap-6 xl:grid-cols-2 2xl:grid-cols-4">
+          <article class="rounded-3xl bg-[#FFF8F0] p-4">
+            <h3 class="font-heading text-lg font-semibold">Tugas Mingguan</h3>
+            <div class="mt-4 flex items-end gap-3">
+              <div class="flex h-48 flex-col justify-between pb-6 text-xs font-medium text-[#2E4374]/45">
+                <span>6</span>
+                <span>4</span>
+                <span>2</span>
+                <span>0</span>
+              </div>
+              <div id="weekly-chart-bars" class="flex h-48 flex-1 items-end gap-3 border-l border-b border-[#2E4374]/10 pl-3"></div>
+            </div>
+          </article>
+
+          <article class="rounded-3xl bg-[#FFF8F0] p-4">
+            <h3 class="font-heading text-lg font-semibold">Trend Tabungan</h3>
+            <div id="savings-trend-list" class="mt-5 space-y-4"></div>
+          </article>
+
+          <article class="rounded-3xl bg-[#FFF8F0] p-4">
+            <h3 class="font-heading text-lg font-semibold">Distribusi Kantong</h3>
+            <div class="mt-5 space-y-4">
+              <div>
+                <div class="mb-2 flex items-center justify-between text-sm text-[#2E4374]/70">
+                  <span>Tabung</span>
+                  <span id="chart-pocket-save">-</span>
+                </div>
+                <div class="h-3 rounded-full bg-white">
+                  <div id="chart-pocket-save-bar" class="progress-animate h-3 rounded-full bg-[#5ECFC1]" style="width: 0%;"></div>
+                </div>
+              </div>
+              <div>
+                <div class="mb-2 flex items-center justify-between text-sm text-[#2E4374]/70">
+                  <span>Belanja</span>
+                  <span id="chart-pocket-spend">-</span>
+                </div>
+                <div class="h-3 rounded-full bg-white">
+                  <div id="chart-pocket-spend-bar" class="progress-animate h-3 rounded-full bg-[#FF8C61]" style="width: 0%;"></div>
+                </div>
+              </div>
+              <div>
+                <div class="mb-2 flex items-center justify-between text-sm text-[#2E4374]/70">
+                  <span>Berbagi</span>
+                  <span id="chart-pocket-share">-</span>
+                </div>
+                <div class="h-3 rounded-full bg-white">
+                  <div id="chart-pocket-share-bar" class="progress-animate h-3 rounded-full bg-[#B39DDB]" style="width: 0%;"></div>
+                </div>
+              </div>
+              <div class="rounded-2xl bg-white p-3 text-sm text-[#2E4374]/70">
+                Badge terbuka bulan ini:
+                <span id="chart-badge-summary" class="font-semibold text-[#2E4374]">-</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="rounded-3xl bg-[#FFF8F0] p-4">
+            <h3 class="font-heading text-lg font-semibold">Progress Badge</h3>
+            <div class="mt-5 rounded-2xl bg-white p-4">
+              <div class="flex items-center justify-between gap-3">
+                <div>
+                  <p class="text-sm text-[#2E4374]/60">Koleksi badge</p>
+                  <p id="chart-badge-ratio" class="mt-1 font-semibold text-[#2E4374]">-</p>
+                </div>
+                <div class="rounded-full bg-[#FFF6D9] px-3 py-2 text-sm font-semibold text-[#2E4374]">
+                  <span id="chart-badge-percent">-</span>
+                </div>
+              </div>
+              <div class="mt-4 h-4 rounded-full bg-[#FFF6D9]">
+                <div id="chart-badge-bar" class="progress-animate h-4 rounded-full bg-[#FFC94A]" style="width: 0%;"></div>
+              </div>
+              <div class="mt-4 rounded-2xl bg-[#EAF0FB] p-3 text-sm text-[#2E4374]/75">
+                Badge berikutnya: <span id="chart-badge-next" class="font-semibold text-[#2E4374]">-</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Certificate Preview + Export / Import -->
+      <section class="certificate-print-section mt-8 grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.9fr)]">
+        <article class="rounded-3xl bg-white p-5 shadow-sm shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8 sm:p-6">
+          <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/60">
+            Certificate
+          </p>
+          <div class="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <h2 class="font-heading text-xl font-semibold sm:text-2xl">
+              Preview Sertifikat
+            </h2>
+            <div id="certificate-print-actions" class="flex flex-col gap-3 sm:flex-row">
+              <button
+                id="certificate-preview-button"
+                class="min-h-[44px] rounded-[18px] border border-[#2E4374]/15 bg-white px-4 py-3 text-sm font-semibold text-[#2E4374]"
+                type="button"
+              >
+                Fokus Preview
+              </button>
+              <button
+                id="certificate-print-button"
+                class="min-h-[44px] rounded-[18px] bg-[#FF8C61] px-4 py-3 text-sm font-semibold text-white shadow-md shadow-[#FF8C61]/25"
+                type="button"
+              >
+                Cetak Sertifikat
+              </button>
+            </div>
+          </div>
+          <p id="certificate-preview-note" class="mt-3 text-sm text-[#2E4374]/70">
+            Preview ini disusun agar tetap nyaman dilihat di mobile dan punya arah cetak yang rapi saat dibutuhkan.
+          </p>
+          <div id="certificate-preview-card" class="mt-5 rounded-[28px] border-2 border-[#FFC94A]/60 bg-gradient-to-br from-[#FFF6D9] via-white to-[#FFF8F0] p-6">
+            <div class="flex flex-col gap-5 border-b border-[#2E4374]/10 pb-5 md:flex-row md:items-start md:justify-between">
+              <div>
+                <p id="certificate-month" class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/60">
+                  -
+                </p>
+                <h3 class="font-heading mt-3 text-2xl font-semibold text-[#2E4374]">
+                  Sertifikat Kebiasaan Finansial Baik
+                </h3>
+                <p id="certificate-period" class="mt-2 text-sm font-medium text-[#2E4374]/65">-</p>
+                <p class="mt-3 text-base text-[#2E4374]/80">
+                  Diberikan kepada <span id="certificate-child-name" class="font-semibold">-</span>
+                  <span id="certificate-summary"></span>
+                </p>
+              </div>
+              <div class="grid gap-3 sm:min-w-[190px]">
+                <div class="rounded-3xl bg-white/80 px-5 py-4 text-center shadow-sm">
+                  <div class="text-4xl" aria-hidden="true">🦌</div>
+                  <p class="mt-2 text-sm font-semibold text-[#2E4374]">Kancil bangga</p>
+                </div>
+                <div class="rounded-2xl bg-white/80 p-4 text-center shadow-sm">
+                  <p class="text-xs font-semibold uppercase tracking-[0.16em] text-[#2E4374]/55">Lencana Utama</p>
+                  <p id="certificate-main-badge" class="mt-2 font-semibold text-[#2E4374]">-</p>
+                </div>
+              </div>
+            </div>
+            <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <div class="rounded-2xl bg-white/80 p-4">
+                <p class="text-sm text-[#2E4374]/65">Tugas selesai</p>
+                <p id="certificate-completed" class="mt-2 font-semibold">-</p>
+              </div>
+              <div class="rounded-2xl bg-white/80 p-4">
+                <p class="text-sm text-[#2E4374]/65">Streak terbaik</p>
+                <p id="certificate-streak" class="mt-2 font-semibold">-</p>
+              </div>
+              <div class="rounded-2xl bg-white/80 p-4">
+                <p class="text-sm text-[#2E4374]/65">Total tabungan</p>
+                <p id="certificate-savings" class="mt-2 font-semibold">-</p>
+              </div>
+              <div class="rounded-2xl bg-white/80 p-4">
+                <p class="text-sm text-[#2E4374]/65">Badge terbuka</p>
+                <p id="certificate-badges" class="mt-2 font-semibold">-</p>
+              </div>
+            </div>
+            <div class="mt-6 rounded-[24px] bg-white/85 p-5 shadow-sm">
+              <p class="text-sm font-semibold uppercase tracking-[0.16em] text-[#2E4374]/55">Pesan Apresiasi Kancil</p>
+              <p id="certificate-message" class="mt-3 text-lg font-semibold text-[#2E4374]">-</p>
+              <div class="mt-5 flex items-center justify-between gap-4 border-t border-[#2E4374]/10 pt-4 text-sm text-[#2E4374]/70">
+                <div>
+                  <p class="font-semibold text-[#2E4374]">Orang Tua / Pendamping</p>
+                  <p class="mt-1">________________________</p>
+                </div>
+                <div class="text-right">
+                  <p class="font-semibold text-[#2E4374]">Kancil Uangku</p>
+                  <p class="mt-1">Teman belajar uang pertama</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <aside class="space-y-6">
+          <article class="rounded-3xl bg-white p-5 shadow-sm shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8 sm:p-6">
+            <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/60">
+              Data Lokal
+            </p>
+            <h2 class="font-heading mt-2 text-xl font-semibold">Export / Import</h2>
+            <div id="data-status-card" aria-live="polite" class="mt-5 rounded-2xl bg-[#EAF0FB] p-4 text-sm text-[#2E4374]/75">
+              <p class="font-semibold text-[#2E4374]">Status data</p>
+              <p id="data-status-text" class="mt-2">Belum ada aksi baru. Data demo siap ditinjau.</p>
+            </div>
+            <div class="mt-5 space-y-3">
+              <button
+                id="export-data-button"
+                class="min-h-[44px] w-full rounded-[18px] bg-[#FF8C61] px-4 py-3 text-sm font-semibold text-white shadow-md shadow-[#FF8C61]/25"
+                type="button"
+              >
+                Export Data
+              </button>
+              <button
+                id="import-data-button"
+                class="min-h-[44px] w-full rounded-[18px] border border-[#2E4374]/15 bg-white px-4 py-3 text-sm font-semibold text-[#2E4374]"
+                type="button"
+              >
+                Import Data
+              </button>
+              <button
+                id="reset-data-button"
+                class="min-h-[44px] w-full rounded-[18px] bg-[#FFF0EA] px-4 py-3 text-sm font-semibold text-[#2E4374]"
+                type="button"
+              >
+                Reset Data
+              </button>
+            </div>
+
+            <input id="import-file-input" class="hidden" type="file" accept=".json,application/json" />
+
+            <div class="mt-5 rounded-2xl border border-[#2E4374]/10 bg-[#FFF8F0] p-4 text-sm text-[#2E4374]/75">
+              <p class="font-semibold text-[#2E4374]">Status tersimpan</p>
+              <p id="saved-status-text" class="mt-2">Terakhir ditinjau: 4 Juli 2026, 14:20 WIB</p>
+            </div>
+
+            <div id="import-feedback" aria-live="polite" class="mt-4 hidden rounded-2xl border border-[#2E4374]/10 p-4 text-sm">
+              <p id="import-feedback-title" class="font-semibold text-[#2E4374]">-</p>
+              <p id="import-feedback-note" class="mt-2 text-[#2E4374]/75">-</p>
+            </div>
+
+            <div id="reset-confirmation" class="mt-4 hidden rounded-2xl border border-dashed border-[#FF8C61]/35 bg-[#FFF0EA] p-4">
+              <p class="font-semibold text-[#2E4374]">Konfirmasi reset data demo</p>
+              <p class="mt-2 text-sm text-[#2E4374]/75">
+                Reset hanya simulasi UI pada fase ini. Tidak ada penyimpanan permanen yang akan dihapus.
+              </p>
+              <div class="mt-4 flex flex-col gap-3 sm:flex-row">
+                <button
+                  id="confirm-reset-button"
+                  class="min-h-[44px] rounded-[18px] bg-[#FF8C61] px-4 py-3 text-sm font-semibold text-white"
+                  type="button"
+                >
+                  Ya, reset simulasi
+                </button>
+                <button
+                  id="cancel-reset-button"
+                  class="min-h-[44px] rounded-[18px] border border-[#2E4374]/15 bg-white px-4 py-3 text-sm font-semibold text-[#2E4374]"
+                  type="button"
+                >
+                  Batal
+                </button>
+              </div>
+            </div>
+
+            <div class="mt-4 rounded-2xl border border-dashed border-[#2E4374]/20 p-4">
+              <p class="font-semibold">Panduan aman untuk orang tua</p>
+              <p class="mt-2 text-sm text-[#2E4374]/70">
+                Export dan import dibuat terlihat jelas agar data keluarga tidak
+                tersembunyi terlalu dalam.
+              </p>
+            </div>
+          </article>
+        </aside>
+      </section>
+    </main>
+
+    <script src="data/demo-data.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/dashboard.js"></script>
+  </body>
+</html>

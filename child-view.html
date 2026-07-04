@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kancil Uangku - Child View</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Nunito", sans-serif;
+      }
+
+      .font-child-heading {
+        font-family: "Baloo 2", cursive;
+      }
+
+      .progress-animate {
+        transition: width 900ms ease, height 900ms ease, transform 900ms ease;
+      }
+
+      .goal-marker[data-active="true"] {
+        background-color: #ffc94a;
+        color: #2e4374;
+        border-color: rgba(46, 67, 116, 0.12);
+        transform: scale(1.05);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        .progress-animate,
+        .goal-marker {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-[#FFF8F0] text-[#2E4374]">
+    <!-- Child Header -->
+    <header class="relative overflow-hidden bg-[#FFF8F0]">
+      <div class="absolute left-0 top-0 h-40 w-40 rounded-full bg-[#FFC94A]/30 blur-3xl" aria-hidden="true"></div>
+      <div class="absolute right-0 top-10 h-44 w-44 rounded-full bg-[#5ECFC1]/25 blur-3xl" aria-hidden="true"></div>
+
+      <div class="relative mx-auto max-w-4xl px-4 py-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-[#2E4374]/55">
+              Kancil Uangku
+            </p>
+            <h1 class="font-child-heading text-2xl text-[#2E4374] sm:text-3xl">
+              Child View
+            </h1>
+            <p id="child-header-title" class="mt-1 text-sm font-bold text-[#2E4374]/70">-</p>
+          </div>
+          <a
+            id="back-to-parent-link"
+            class="inline-flex min-h-[44px] items-center rounded-[18px] border border-[#2E4374]/10 bg-white px-4 py-3 text-sm font-bold text-[#2E4374] shadow-sm shadow-[#2E4374]/5 focus:outline-none focus:ring-4 focus:ring-[#2E4374]/10"
+            href="parent-dashboard.html"
+          >
+            Kembali ke Parent
+          </a>
+        </div>
+        <div id="child-switcher" class="mt-4 flex flex-wrap gap-2"></div>
+      </div>
+    </header>
+
+    <main class="mx-auto flex max-w-4xl flex-col gap-6 px-4 pb-10 sm:px-6 lg:px-8 lg:gap-8">
+      <!-- Welcome Hero with Kancil -->
+      <section
+        class="overflow-hidden rounded-[28px] bg-white p-5 shadow-md shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8 sm:p-6"
+        aria-labelledby="child-hero-title"
+      >
+        <div class="grid gap-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-[#2E4374]/55">
+              Halo Hari Ini
+            </p>
+            <h2 id="child-hero-title" class="font-child-heading mt-2 text-3xl leading-tight text-[#2E4374] sm:text-4xl">
+              Hai, <span id="child-hero-name">-</span>. Kancil siap temani misi uangmu hari ini.
+            </h2>
+            <p id="child-hero-intro" class="mt-3 max-w-xl text-base text-[#2E4374]/75 sm:text-lg">-</p>
+            <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+              <a
+                id="hero-mission-link"
+                class="inline-flex min-h-[48px] items-center justify-center rounded-[20px] bg-[#FF8C61] px-5 py-3 text-sm font-extrabold text-white shadow-md shadow-[#FF8C61]/30 focus:outline-none focus:ring-4 focus:ring-[#FF8C61]/20"
+                href="#mission-title"
+              >
+                Lihat Misiku
+              </a>
+              <a
+                id="hero-goal-link"
+                class="inline-flex min-h-[48px] items-center justify-center rounded-[20px] bg-[#EAFBF8] px-5 py-3 text-sm font-extrabold text-[#2E4374] focus:outline-none focus:ring-4 focus:ring-[#2E4374]/10"
+                href="#goal-title"
+              >
+                Cek Tabunganku
+              </a>
+            </div>
+          </div>
+
+          <div class="relative">
+            <div class="rounded-[28px] bg-[#FFF6D9] p-5 shadow-sm shadow-[#FFC94A]/20">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-bold text-[#2E4374]/60">Teman Kancil</p>
+                  <p class="font-child-heading text-2xl text-[#2E4374]">🦌</p>
+                </div>
+                <span id="child-hero-week" class="rounded-full bg-white px-3 py-1 text-xs font-bold text-[#2E4374]">
+                  -
+                </span>
+              </div>
+              <div class="mt-4 rounded-[24px] bg-white/80 p-4">
+                <p id="child-hero-praise" class="font-child-heading text-2xl text-[#2E4374]">-</p>
+                <p id="child-hero-progress" class="mt-2 text-sm text-[#2E4374]/70">-</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- This Week Mission -->
+      <section
+        class="rounded-[28px] bg-white p-5 shadow-md shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8 sm:p-6"
+        aria-labelledby="mission-title"
+      >
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-[#2E4374]/55">
+              Misi Utama
+            </p>
+            <h2 id="mission-title" class="font-child-heading text-2xl text-[#2E4374] sm:text-3xl">
+              Misi Minggu Ini
+            </h2>
+          </div>
+          <p id="mission-summary" class="text-sm font-bold text-[#FF8C61]">-</p>
+        </div>
+
+        <div id="mission-list" class="mt-5 grid gap-4"></div>
+
+        <div class="mt-5 rounded-[24px] border border-dashed border-[#2E4374]/18 bg-[#FFF6D9] p-4">
+          <div class="flex items-start gap-3">
+            <div class="text-2xl" aria-hidden="true">🦌</div>
+            <div>
+              <p class="font-child-heading text-xl text-[#2E4374]">Pesan Kancil</p>
+              <p id="mission-kancil-note" class="mt-1 text-sm text-[#2E4374]/75">-</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Big Savings Goal Visual -->
+      <section
+        class="rounded-[28px] bg-white p-5 shadow-md shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8 sm:p-6"
+        aria-labelledby="goal-title"
+      >
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-[#2E4374]/55">
+              Target Tabungan
+            </p>
+            <h2 id="goal-title" class="font-child-heading text-2xl text-[#2E4374] sm:text-3xl">
+              Tabunganku
+            </h2>
+          </div>
+          <p id="goal-percent-chip" class="text-sm font-bold text-[#5ECFC1]">-</p>
+        </div>
+
+        <div class="mt-5 rounded-[28px] bg-[#EAFBF8] p-5">
+          <div class="grid gap-5 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+            <div class="rounded-[28px] bg-white p-5 shadow-sm">
+              <p class="text-sm font-bold text-[#2E4374]/60">Toples tabungan</p>
+              <div class="mx-auto mt-4 flex h-56 w-44 items-end justify-center rounded-[36px] border-[6px] border-[#2E4374]/12 bg-[#FFF8F0] p-4">
+                <div class="relative w-full overflow-hidden rounded-[24px] bg-white">
+                  <div id="goal-jar-fill" class="progress-animate absolute inset-x-0 bottom-0 rounded-b-[20px] bg-[#5ECFC1]" style="height: 0%;"></div>
+                  <div class="relative flex h-40 items-end justify-center pb-4 text-5xl" aria-hidden="true">🪙</div>
+                </div>
+              </div>
+              <p class="mt-4 text-center text-sm font-bold text-[#2E4374]/70">
+                Kancil lihat toplesmu makin penuh.
+              </p>
+            </div>
+
+            <div>
+              <h3 id="goal-name-child" class="font-child-heading text-3xl text-[#2E4374]">-</h3>
+              <p class="mt-2 text-base text-[#2E4374]/75">
+                Kamu sudah menabung banyak. Sedikit lagi sampai tujuanmu.
+              </p>
+              <div class="mt-5 grid grid-cols-2 gap-3">
+                <div class="rounded-[24px] bg-white p-4 shadow-sm">
+                  <p class="text-sm text-[#2E4374]/60">Terkumpul</p>
+                  <p id="goal-current-child" class="mt-2 text-2xl font-extrabold text-[#5ECFC1]">-</p>
+                </div>
+                <div class="rounded-[24px] bg-white p-4 shadow-sm">
+                  <p class="text-sm text-[#2E4374]/60">Target</p>
+                  <p id="goal-target-child" class="mt-2 text-2xl font-extrabold text-[#2E4374]">-</p>
+                </div>
+              </div>
+              <div class="mt-5">
+                <div class="mb-2 flex items-center justify-between text-sm font-bold text-[#2E4374]/70">
+                  <span>Progress</span>
+                  <span id="goal-progress-text">-</span>
+                </div>
+                <div class="h-5 rounded-full bg-white">
+                  <div id="goal-progress-child-bar" class="progress-animate h-5 rounded-full bg-[#5ECFC1]" style="width: 0%;"></div>
+                </div>
+                <div class="mt-3 grid grid-cols-4 gap-2 text-center text-xs font-bold text-[#2E4374]/65">
+                  <div id="goal-marker-25" data-active="false" class="goal-marker rounded-full border border-[#2E4374]/10 bg-white px-2 py-2 transition">25%</div>
+                  <div id="goal-marker-50" data-active="false" class="goal-marker rounded-full border border-[#2E4374]/10 bg-white px-2 py-2 transition">50%</div>
+                  <div id="goal-marker-75" data-active="false" class="goal-marker rounded-full border border-[#2E4374]/10 bg-white px-2 py-2 transition">75%</div>
+                  <div id="goal-marker-100" data-active="false" class="goal-marker rounded-full border border-[#2E4374]/10 bg-white px-2 py-2 transition">100%</div>
+                </div>
+              </div>
+              <div class="mt-5 rounded-[24px] bg-[#FFF6D9] p-4">
+                <p id="goal-milestone-text" class="font-child-heading text-2xl text-[#2E4374]">-</p>
+                <p id="goal-milestone-note" class="mt-1 text-sm text-[#2E4374]/75">-</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="child-goal-empty-state" class="mt-5 hidden rounded-[24px] border border-dashed border-[#2E4374]/18 bg-[#EAFBF8] p-4">
+          <p class="font-child-heading text-xl text-[#2E4374]">Empty State Target</p>
+          <p class="mt-1 text-sm text-[#2E4374]/75">
+            Kancil siap bantu menabung. Tentukan tujuan pertamamu bersama orang tua.
+          </p>
+        </div>
+      </section>
+
+      <!-- Three Pockets -->
+      <section
+        class="rounded-[28px] bg-white p-5 shadow-md shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8 sm:p-6"
+        aria-labelledby="pockets-title"
+      >
+        <p class="text-sm font-bold uppercase tracking-[0.18em] text-[#2E4374]/55">
+          Tiga Kantong
+        </p>
+        <h2 id="pockets-title" class="font-child-heading text-2xl text-[#2E4374] sm:text-3xl">
+          Uangku Punya Tiga Tempat
+        </h2>
+
+        <div class="mt-5 grid gap-4 md:grid-cols-3">
+          <article class="rounded-[26px] bg-[#EAFBF8] p-5">
+            <div class="flex items-center justify-between">
+              <h3 class="font-child-heading text-2xl text-[#2E4374]">Tabung</h3>
+              <span class="text-3xl" aria-hidden="true">🫙</span>
+            </div>
+            <p id="child-pocket-save-amount" class="mt-3 text-3xl font-extrabold text-[#2E4374]">-</p>
+            <p class="mt-2 text-sm text-[#2E4374]/75">
+              Buat tujuan masa depan yang kamu inginkan.
+            </p>
+          </article>
+
+          <article class="rounded-[26px] bg-[#FFF0EA] p-5">
+            <div class="flex items-center justify-between">
+              <h3 class="font-child-heading text-2xl text-[#2E4374]">Belanja</h3>
+              <span class="text-3xl" aria-hidden="true">🧺</span>
+            </div>
+            <p id="child-pocket-spend-amount" class="mt-3 text-3xl font-extrabold text-[#2E4374]">-</p>
+            <p class="mt-2 text-sm text-[#2E4374]/75">
+              Buat kebutuhan kecil atau keinginan yang dipilih baik-baik.
+            </p>
+          </article>
+
+          <article class="rounded-[26px] bg-[#F2ECFA] p-5">
+            <div class="flex items-center justify-between">
+              <h3 class="font-child-heading text-2xl text-[#2E4374]">Berbagi</h3>
+              <span class="text-3xl" aria-hidden="true">💝</span>
+            </div>
+            <p id="child-pocket-share-amount" class="mt-3 text-3xl font-extrabold text-[#2E4374]">-</p>
+            <p class="mt-2 text-sm text-[#2E4374]/75">
+              Buat membantu orang lain dengan hati yang hangat.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Badge Collection -->
+      <section
+        class="rounded-[28px] bg-white p-5 shadow-md shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8 sm:p-6"
+        aria-labelledby="badge-title"
+      >
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-[#2E4374]/55">
+              Pencapaian
+            </p>
+            <h2 id="badge-title" class="font-child-heading text-2xl text-[#2E4374] sm:text-3xl">
+              Badge Hebatku
+            </h2>
+          </div>
+          <p id="badge-count-summary" class="text-sm font-bold text-[#FFC94A]">-</p>
+        </div>
+
+        <article class="mt-5 rounded-[26px] bg-[#FFF6D9] p-5">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex items-center gap-4">
+              <div class="flex h-16 w-16 items-center justify-center rounded-full bg-white text-3xl shadow-sm" aria-hidden="true">
+                ⭐
+              </div>
+              <div>
+                <p class="text-sm font-bold uppercase tracking-[0.14em] text-[#2E4374]/55">
+                  Badge Baru
+                </p>
+                <h3 id="featured-badge-name" class="font-child-heading text-3xl text-[#2E4374]">-</h3>
+                <p id="featured-badge-description" class="mt-1 text-sm text-[#2E4374]/75">-</p>
+              </div>
+            </div>
+            <span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-[#2E4374]">
+              Baru terbuka
+            </span>
+          </div>
+        </article>
+
+        <div class="mt-5 -mx-5 overflow-x-auto px-5 pb-2">
+          <div id="badge-carousel" class="flex min-w-max gap-4"></div>
+        </div>
+
+        <div class="mt-5 rounded-[24px] bg-[#EAFBF8] p-4">
+          <div class="flex items-center justify-between gap-3">
+            <p class="font-child-heading text-2xl text-[#2E4374]">Progress badge</p>
+            <p id="badge-progress-text" class="text-sm font-extrabold text-[#2E4374]">-</p>
+          </div>
+          <div class="mt-3 h-4 rounded-full bg-white">
+            <div id="badge-progress-bar" class="progress-animate h-4 rounded-full bg-[#FFC94A]" style="width: 0%;"></div>
+          </div>
+          <p id="badge-progress-note" class="mt-3 text-sm text-[#2E4374]/75">-</p>
+        </div>
+
+        <div id="child-badge-empty-state" class="mt-5 hidden rounded-[24px] border border-dashed border-[#2E4374]/18 bg-[#FFF8F0] p-4">
+          <p class="font-child-heading text-xl text-[#2E4374]">Empty State Badge</p>
+          <p class="mt-1 text-sm text-[#2E4374]/75">
+            Badge pertama masih menunggu. Selesaikan misi kecil minggu ini.
+          </p>
+        </div>
+      </section>
+
+      <!-- Streak Display -->
+      <section
+        class="rounded-[28px] bg-white p-5 shadow-md shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8 sm:p-6"
+        aria-labelledby="streak-title"
+      >
+        <div class="grid gap-5 md:grid-cols-[0.9fr_1.1fr] md:items-center">
+          <div class="rounded-[28px] bg-[#FFF0EA] p-5 text-center">
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-[#2E4374]/55">
+              Streak
+            </p>
+            <h2 id="streak-title" class="font-child-heading mt-2 text-3xl text-[#2E4374]">
+              Langkah Rajinku
+            </h2>
+            <div class="mt-4 text-6xl" aria-hidden="true">🔥</div>
+            <p id="streak-current" class="mt-4 text-5xl font-extrabold text-[#2E4374]">-</p>
+            <p class="mt-2 text-sm font-bold text-[#2E4374]/75">hari berturut-turut</p>
+          </div>
+
+          <div class="space-y-4">
+            <div class="rounded-[24px] bg-[#FFF6D9] p-4">
+              <p id="streak-best" class="font-child-heading text-2xl text-[#2E4374]">-</p>
+              <p class="mt-1 text-sm text-[#2E4374]/75">
+                Langkah kecilmu sudah tumbuh jauh. Kancil suka lihat kamu tetap lanjut.
+              </p>
+            </div>
+            <div class="rounded-[24px] bg-[#EAFBF8] p-4">
+              <p class="font-child-heading text-2xl text-[#2E4374]">Besok lanjut lagi, ya.</p>
+              <p class="mt-1 text-sm text-[#2E4374]/75">
+                Konsisten itu bukan lomba. Yang penting kamu terus mencoba pelan-pelan.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Kancil Encouragement Message -->
+      <section
+        class="rounded-[28px] bg-[#2E4374] p-5 text-white shadow-md shadow-[#2E4374]/18 sm:p-6"
+        aria-labelledby="kancil-message-title"
+      >
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div class="max-w-2xl">
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-white/65">
+              Pesan Kancil
+            </p>
+            <h2 id="kancil-message-title" class="font-child-heading mt-2 text-3xl text-white sm:text-4xl">
+              <span id="kancil-final-message">-</span>
+            </h2>
+            <p id="kancil-final-note" class="mt-3 text-base text-white/80">-</p>
+          </div>
+          <div class="rounded-[28px] bg-white/12 p-5 text-center">
+            <div class="text-5xl" aria-hidden="true">🦌</div>
+            <p class="mt-2 text-sm font-bold text-white/80">Teman belajar uangmu</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="data/demo-data.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/child-view.js"></script>
+  </body>
+</html>
