@@ -3,12 +3,17 @@ const DashboardPage = (() => {
     addChild,
     animatePercent,
     applyImportPayload,
+    clearSession,
     createExportPayload,
     data,
     buildChildHref,
     formatCurrency,
     getChildBundle,
+    getSession,
+    removeChild,
+    removeTask,
     resetDemoData,
+    requireSession,
     setActiveChild,
     getCompletionStats,
     getLatestUnlockedBadge,
@@ -19,17 +24,29 @@ const DashboardPage = (() => {
     setClassName,
     setHTML,
     setText,
+    upsertTask,
     updateChildProfile,
     validateImportPayload,
   } = window.KancilApp;
 
-  function renderHeader(bundle, weekNumber) {
+  function renderHeader(bundle, weekNumber, session) {
     setText("active-child-name", bundle.child.name);
     setText("active-period", `${bundle.monthlyRecap.month} - Minggu ${weekNumber}`);
+    setText("parent-session-name", session?.parentName || session?.email || "Orang Tua");
     const childViewLink = document.getElementById("child-view-link");
     if (childViewLink) {
       childViewLink.href = buildChildHref("child-view.html", bundle.child.id);
     }
+  }
+
+  function bindSessionUI() {
+    const logoutButton = document.getElementById("logout-button");
+    if (!logoutButton) return;
+
+    logoutButton.addEventListener("click", () => {
+      clearSession();
+      window.location.href = "login.html";
+    });
   }
 
   function renderQuickStats(bundle, weekTasks) {
@@ -43,10 +60,10 @@ const DashboardPage = (() => {
     );
     setText("stat-completion-rate", `${completion.percentage}%`);
     setText("stat-completion-note", `Progress minggu ini untuk ${bundle.child.name}`);
-    setText("stat-total-savings", formatCurrency(bundle.goal.currentAmount));
+    setText("stat-total-savings", formatCurrency(bundle.pocket.saveAmount));
     setText(
       "stat-total-savings-note",
-      `Target aktif ${Math.round((bundle.goal.currentAmount / bundle.goal.targetAmount) * 100)}% tercapai`
+      `${bundle.pocket.allocationSavePercent}% reward masuk ke tabungan aman`
     );
     setText("stat-latest-badge", latestBadge ? latestBadge.badgeName : "Belum ada badge");
     setText(
@@ -106,8 +123,8 @@ const DashboardPage = (() => {
                 <dd class="mt-1 font-semibold">${completion.completed}/${completion.total}</dd>
               </div>
               <div>
-                <dt class="text-[#2E4374]/60">Tabungan</dt>
-                <dd class="mt-1 font-semibold text-[#5ECFC1]">${goalPercent}%</dd>
+                <dt class="text-[#2E4374]/60">Goal</dt>
+                <dd class="mt-1 font-semibold text-[#FF8C61]">${goalPercent}%</dd>
               </div>
               <div>
                 <dt class="text-[#2E4374]/60">Streak</dt>
@@ -166,7 +183,16 @@ const DashboardPage = (() => {
           return `
             <div class="grid gap-3 px-4 py-4 md:grid-cols-[1.8fr_1.3fr_1fr_1fr] md:items-center">
               <div>
-                <p class="font-semibold">${task.title}</p>
+                <div class="flex flex-wrap items-center gap-2">
+                  <p class="font-semibold">${task.title}</p>
+                  <button
+                    type="button"
+                    data-task-edit="${task.id}"
+                    class="inline-flex min-h-[32px] items-center rounded-full bg-[#EAF0FB] px-3 py-1 text-xs font-semibold text-[#2E4374]"
+                  >
+                    Edit
+                  </button>
+                </div>
                 <p class="mt-1 text-sm text-[#2E4374]/65">${task.description}</p>
               </div>
               <div class="text-sm">
@@ -192,20 +218,30 @@ const DashboardPage = (() => {
 
   function renderRewardSummary(bundle, weekTasks) {
     const rewards = getRewardSummary(weekTasks);
+    const rewardSave = Math.round(rewards.money * (bundle.pocket.allocationSavePercent / 100));
+    const rewardGoal = Math.max(0, rewards.money - rewardSave);
     setText("reward-money", formatCurrency(rewards.money));
     setText("reward-non-money", `${rewards.nonMoney} aktivitas spesial`);
     setText("reward-badge", `${rewards.badge} badge siap terbuka`);
+    setText("reward-save-split", formatCurrency(rewardSave));
+    setText("reward-goal-split", formatCurrency(rewardGoal));
     setText(
       "reward-note",
-      `Fokus apresiasi ${bundle.child.name} tetap pada usaha dan kebiasaan, bukan hanya nominal uang.`
+      `Total reward uang ${bundle.child.name} dibagi otomatis: 30% ke tabungan aman dan 70% ke dana belanja untuk mengejar goal ${bundle.goal.goalName.toLowerCase()}.`
     );
   }
 
   function renderGoalAndPockets(bundle) {
     const goalEmptyState = document.getElementById("goal-empty-state");
     const goalPercent = Math.round((bundle.goal.currentAmount / bundle.goal.targetAmount) * 100);
+    setText("finance-total-reward", formatCurrency(bundle.monthlyRecap.totalReward));
+    setText("finance-total-percent", "100%");
+    setText(
+      "finance-total-note",
+      "Seluruh reward uang yang sudah terkumpul lalu dibagi otomatis ke tabungan aman dan dana belanja goal."
+    );
     setText("goal-name", bundle.goal.goalName);
-    setText("goal-target-date", `Target tercapai sebelum ${bundle.goal.targetDate}`);
+    setText("goal-target-date", `Dana belanja ini mengejar target sebelum ${bundle.goal.targetDate}`);
     setText("goal-current-amount", formatCurrency(bundle.goal.currentAmount));
     setText("goal-percent-summary", `${goalPercent}% dari target ${formatCurrency(bundle.goal.targetAmount)}`);
     setText(
@@ -218,22 +254,17 @@ const DashboardPage = (() => {
     }
 
     setText("pocket-save-amount", formatCurrency(bundle.pocket.saveAmount));
-    setText("pocket-save-note", `${bundle.pocket.allocationSavePercent}% untuk tujuan masa depan`);
+    setText(
+      "pocket-save-note",
+      `${bundle.pocket.allocationSavePercent}% dari total reward disimpan sebagai tabungan aman.`
+    );
     setText("pocket-spend-amount", formatCurrency(bundle.pocket.spendAmount));
-    setText("pocket-spend-note", `${bundle.pocket.allocationSpendPercent}% untuk kebutuhan kecil`);
-    setText("pocket-share-amount", formatCurrency(bundle.pocket.shareAmount));
-    setText("pocket-share-note", `${bundle.pocket.allocationSharePercent}% untuk bantu orang lain`);
-
-    const saveBar = document.getElementById("pocket-save-bar");
-    const spendBar = document.getElementById("pocket-spend-bar");
-    const shareBar = document.getElementById("pocket-share-bar");
-    animatePercent(saveBar, "width", bundle.pocket.allocationSavePercent);
-    animatePercent(spendBar, "width", bundle.pocket.allocationSpendPercent);
-    animatePercent(shareBar, "width", bundle.pocket.allocationSharePercent);
-
-    setText("pocket-save-percent", `Tabung ${bundle.pocket.allocationSavePercent}%`);
-    setText("pocket-spend-percent", `Belanja ${bundle.pocket.allocationSpendPercent}%`);
-    setText("pocket-share-percent", `Berbagi ${bundle.pocket.allocationSharePercent}%`);
+    setText(
+      "pocket-spend-note",
+      `${bundle.pocket.allocationSpendPercent}% dari total reward menjadi dana belanja untuk goal anak.`
+    );
+    setText("pocket-save-percent", `${bundle.pocket.allocationSavePercent}%`);
+    setText("pocket-spend-percent", `${bundle.pocket.allocationSpendPercent}%`);
 
     if (goalEmptyState) {
       goalEmptyState.classList.toggle("hidden", Boolean(bundle.goal));
@@ -254,12 +285,8 @@ const DashboardPage = (() => {
     setText("best-streak-text", `Best streak: ${bundle.streak.bestStreak} hari`);
     setText("badge-unlocked-count", `${unlockedBadges.length} terbuka`);
     setText("badge-locked-count", `${lockedBadges.length} menunggu`);
-
-    const sharingBadge = unlockedBadges.find((badge) => badge.badgeType === "sharing");
-    setText(
-      "badge-sharing-count",
-      sharingBadge ? "1 badge berbagi" : "Belum ada badge berbagi"
-    );
+    const goalBadge = unlockedBadges.find((badge) => badge.badgeType === "saving");
+    setText("badge-goal-count", goalBadge ? "1 badge tabungan" : "Belum ada badge tabungan");
   }
 
   function renderMonthlyRecap(bundle) {
@@ -268,7 +295,6 @@ const DashboardPage = (() => {
     setText("monthly-total-reward", formatCurrency(bundle.monthlyRecap.totalReward));
     setText("monthly-total-saved", formatCurrency(bundle.monthlyRecap.totalSaved));
     setText("monthly-total-spent", formatCurrency(bundle.monthlyRecap.totalSpent));
-    setText("monthly-total-shared", formatCurrency(bundle.monthlyRecap.totalShared));
     setText("monthly-best-streak", `${bundle.monthlyRecap.bestStreak} hari`);
   }
 
@@ -280,9 +306,11 @@ const DashboardPage = (() => {
         .map((value, index) => {
           const height = Math.max(24, Math.round((value / highestTask) * 100));
           return `
-            <div class="flex flex-1 flex-col items-center gap-3">
+            <div class="flex h-full flex-1 flex-col items-center justify-end gap-3">
               <span class="text-xs font-semibold text-[#2E4374]/70">${value}</span>
-              <div class="chart-animate flex w-full items-end rounded-t-2xl bg-gradient-to-t from-[#FF8C61] to-[#ffb197]" style="height:${height}%"></div>
+              <div class="flex h-32 w-full items-end">
+                <div class="chart-animate w-full rounded-t-2xl bg-gradient-to-t from-[#FF8C61] to-[#ffb197]" style="height:${height}%"></div>
+              </div>
               <span class="text-xs font-medium text-[#2E4374]/70">M${index + 1}</span>
             </div>
           `;
@@ -313,13 +341,10 @@ const DashboardPage = (() => {
 
     setText("chart-pocket-save", `${bundle.pocket.allocationSavePercent}%`);
     setText("chart-pocket-spend", `${bundle.pocket.allocationSpendPercent}%`);
-    setText("chart-pocket-share", `${bundle.pocket.allocationSharePercent}%`);
     const chartSave = document.getElementById("chart-pocket-save-bar");
     const chartSpend = document.getElementById("chart-pocket-spend-bar");
-    const chartShare = document.getElementById("chart-pocket-share-bar");
     animatePercent(chartSave, "width", bundle.pocket.allocationSavePercent);
     animatePercent(chartSpend, "width", bundle.pocket.allocationSpendPercent);
-    animatePercent(chartShare, "width", bundle.pocket.allocationSharePercent);
 
     setText(
       "chart-badge-summary",
@@ -339,7 +364,7 @@ const DashboardPage = (() => {
     animatePercent(badgeBar, "width", badgePercent);
   }
 
-  function renderCertificate(bundle) {
+  function renderCertificate(bundle, session) {
     const latestBadge = getLatestUnlockedBadge(bundle.badges);
     setText("certificate-month", `${bundle.monthlyRecap.month} Achievement`);
     setText("certificate-period", `Periode apresiasi: ${bundle.monthlyRecap.month}`);
@@ -350,6 +375,7 @@ const DashboardPage = (() => {
     setText("certificate-streak", `${bundle.monthlyRecap.bestStreak} hari`);
     setText("certificate-savings", formatCurrency(bundle.monthlyRecap.totalSaved));
     setText("certificate-badges", `${bundle.monthlyRecap.badgesUnlocked} badge`);
+    setText("certificate-parent-name", session?.parentName || session?.email || "Orang Tua");
     setText(
       "certificate-message",
       `${bundle.child.name}, Kancil bangga karena kamu terus belajar mengatur uang dengan sabar, rapi, dan penuh semangat.`
@@ -377,6 +403,215 @@ const DashboardPage = (() => {
     return document.querySelector('input[name="avatar-color"]:checked')?.value || "#5ECFC1";
   }
 
+  function openTaskManagementPanel(config) {
+    const panel = document.getElementById("task-management-panel");
+    const modeInput = document.getElementById("task-management-mode");
+    const taskIdInput = document.getElementById("task-management-task-id");
+    const title = document.getElementById("task-management-title");
+    const description = document.getElementById("task-management-description");
+    const saveButton = document.getElementById("save-task-button");
+    const deleteButton = document.getElementById("delete-task-button");
+    const panelStatus = document.getElementById("task-panel-status");
+
+    const titleInput = document.getElementById("task-title-input");
+    const weekSelect = document.getElementById("task-week-select");
+    const descriptionInput = document.getElementById("task-description-input");
+    const rewardTypeSelect = document.getElementById("task-reward-type-select");
+    const rewardAmountInput = document.getElementById("task-reward-amount-input");
+    const rewardLabelInput = document.getElementById("task-reward-label-input");
+    const statusSelect = document.getElementById("task-status-select");
+    const noteInput = document.getElementById("task-note-input");
+
+    if (
+      !panel ||
+      !modeInput ||
+      !taskIdInput ||
+      !titleInput ||
+      !weekSelect ||
+      !descriptionInput ||
+      !rewardTypeSelect ||
+      !rewardAmountInput ||
+      !rewardLabelInput ||
+      !statusSelect ||
+      !noteInput
+    ) {
+      return;
+    }
+
+    panel.classList.remove("hidden");
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    if (config.mode === "edit" && config.task) {
+      modeInput.value = "edit";
+      taskIdInput.value = config.task.id;
+      title.textContent = `Edit Tugas ${config.task.title}`;
+      description.textContent =
+        "Perbarui judul, reward, status progress, atau catatan pendampingan untuk tugas ini.";
+      saveButton.textContent = "Simpan Update Tugas";
+      titleInput.value = config.task.title;
+      weekSelect.value = String(config.task.weekNumber);
+      descriptionInput.value = config.task.description;
+      rewardTypeSelect.value = config.task.rewardType;
+      rewardAmountInput.value = String(config.task.rewardAmount || 0);
+      rewardLabelInput.value = config.task.rewardLabel;
+      statusSelect.value = config.task.status;
+      noteInput.value = config.task.note;
+      if (deleteButton) {
+        deleteButton.classList.remove("hidden");
+      }
+      if (panelStatus) {
+        panelStatus.textContent =
+          "Ubah reward, status, atau catatan lalu simpan. Perubahan langsung dipakai di dashboard.";
+      }
+      return;
+    }
+
+    modeInput.value = "add";
+    taskIdInput.value = "";
+    title.textContent = "Tambah Tugas Mingguan";
+    description.textContent =
+      "Atur judul tugas, reward, status progress, dan catatan pendampingan orang tua.";
+    saveButton.textContent = "Simpan Tugas";
+    titleInput.value = "";
+    weekSelect.value = String(config.weekNumber || 2);
+    descriptionInput.value = "";
+    rewardTypeSelect.value = "non-uang";
+    rewardAmountInput.value = "0";
+    rewardLabelInput.value = "";
+    statusSelect.value = "belum selesai";
+    noteInput.value = "";
+    if (deleteButton) {
+      deleteButton.classList.add("hidden");
+    }
+    if (panelStatus) {
+      panelStatus.textContent =
+        "Gunakan panel ini untuk menambah tugas baru, mengubah reward, memperbarui status, dan menulis catatan pendampingan.";
+    }
+  }
+
+  function closeTaskManagementPanel() {
+    const panel = document.getElementById("task-management-panel");
+    if (panel) {
+      panel.classList.add("hidden");
+    }
+  }
+
+  function bindTaskManagementUI(selectedChildId, weekNumber) {
+    const openButton = document.getElementById("open-task-management-button");
+    const cancelButton = document.getElementById("cancel-task-management-button");
+    const deleteButton = document.getElementById("delete-task-button");
+    const form = document.getElementById("task-management-form");
+    const taskList = document.getElementById("weekly-task-list");
+    const modeInput = document.getElementById("task-management-mode");
+    const taskIdInput = document.getElementById("task-management-task-id");
+    const titleInput = document.getElementById("task-title-input");
+    const weekSelect = document.getElementById("task-week-select");
+    const descriptionInput = document.getElementById("task-description-input");
+    const rewardTypeSelect = document.getElementById("task-reward-type-select");
+    const rewardAmountInput = document.getElementById("task-reward-amount-input");
+    const rewardLabelInput = document.getElementById("task-reward-label-input");
+    const statusSelect = document.getElementById("task-status-select");
+    const noteInput = document.getElementById("task-note-input");
+    const panelStatus = document.getElementById("task-panel-status");
+
+    if (openButton) {
+      openButton.addEventListener("click", () => {
+        openTaskManagementPanel({ mode: "add", weekNumber });
+      });
+    }
+
+    if (cancelButton) {
+      cancelButton.addEventListener("click", closeTaskManagementPanel);
+    }
+
+    if (taskList) {
+      taskList.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-task-edit]");
+        if (!button) return;
+
+        const taskId = button.dataset.taskEdit;
+        const task = data.tasks.find((item) => item.id === taskId && item.childId === selectedChildId);
+        if (!task) return;
+
+        openTaskManagementPanel({ mode: "edit", task });
+      });
+    }
+
+    if (
+      form &&
+      modeInput &&
+      taskIdInput &&
+      titleInput &&
+      weekSelect &&
+      descriptionInput &&
+      rewardTypeSelect &&
+      rewardAmountInput &&
+      rewardLabelInput &&
+      statusSelect &&
+      noteInput
+    ) {
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const title = titleInput.value.trim();
+        if (!title) {
+          if (panelStatus) {
+            panelStatus.textContent = "Judul tugas masih kosong. Isi dulu sebelum menyimpan.";
+          }
+          titleInput.focus();
+          return;
+        }
+
+        const targetWeek = Number(weekSelect.value) || weekNumber;
+
+        upsertTask({
+          id: modeInput.value === "edit" ? taskIdInput.value : "",
+          childId: selectedChildId,
+          weekNumber: targetWeek,
+          title,
+          description: descriptionInput.value.trim(),
+          rewardType: rewardTypeSelect.value,
+          rewardAmount: Number(rewardAmountInput.value) || 0,
+          rewardLabel: rewardLabelInput.value.trim(),
+          status: statusSelect.value,
+          note: noteInput.value.trim(),
+        });
+
+        window.location.href = `${buildChildHref("parent-dashboard.html", selectedChildId)}&week=${targetWeek}`;
+      });
+    }
+
+    if (deleteButton && taskIdInput) {
+      deleteButton.addEventListener("click", () => {
+        const taskId = taskIdInput.value;
+        if (!taskId) return;
+
+        const task = data.tasks.find((item) => item.id === taskId && item.childId === selectedChildId);
+        if (!task) {
+          if (panelStatus) {
+            panelStatus.textContent = "Tugas tidak ditemukan. Coba buka ulang panel edit tugas.";
+          }
+          return;
+        }
+
+        const confirmed = window.confirm(
+          `Hapus tugas "${task.title}"? Reward, status, dan catatan tugas ini juga akan ikut hilang.`
+        );
+        if (!confirmed) return;
+
+        const removed = removeTask(taskId);
+        if (!removed) {
+          if (panelStatus) {
+            panelStatus.textContent = "Tugas belum berhasil dihapus. Coba lagi sebentar.";
+          }
+          return;
+        }
+
+        window.location.href = `${buildChildHref("parent-dashboard.html", selectedChildId)}&week=${task.weekNumber}`;
+      });
+    }
+  }
+
   function openChildManagementPanel(config) {
     const panel = document.getElementById("child-management-panel");
     const modeInput = document.getElementById("child-management-mode");
@@ -387,6 +622,7 @@ const DashboardPage = (() => {
     const focusInput = document.getElementById("child-focus-input");
     const saveButton = document.getElementById("save-child-button");
     const activateButton = document.getElementById("activate-child-button");
+    const deleteButton = document.getElementById("delete-child-button");
     const panelStatus = document.getElementById("child-panel-status");
 
     if (!panel || !modeInput || !childIdInput || !nameInput || !focusInput) return;
@@ -415,6 +651,9 @@ const DashboardPage = (() => {
       if (activateButton) {
         activateButton.classList.toggle("hidden", config.child.activeStatus);
       }
+      if (deleteButton) {
+        deleteButton.classList.remove("hidden");
+      }
       return;
     }
 
@@ -422,12 +661,12 @@ const DashboardPage = (() => {
     childIdInput.value = "";
     title.textContent = "Tambah Profil Anak";
     description.textContent =
-      "Tambahkan profil baru untuk mulai memantau misi, target tabungan, dan 3 kantong.";
+      "Tambahkan profil baru untuk mulai memantau misi, goal anak, tabungan aman, dan 2 kantong.";
     nameInput.value = "";
     focusInput.value = "";
     saveButton.textContent = "Simpan Profil Anak";
     panelStatus.textContent =
-      "Profil baru akan otomatis mendapat target tabungan awal, ringkasan 3 kantong, dan empty state tugas mingguan.";
+      "Profil baru akan otomatis mendapat goal awal, ringkasan 2 kantong, dan empty state tugas mingguan.";
 
     document
       .querySelectorAll('input[name="avatar-color"]')
@@ -437,6 +676,9 @@ const DashboardPage = (() => {
 
     if (activateButton) {
       activateButton.classList.add("hidden");
+    }
+    if (deleteButton) {
+      deleteButton.classList.add("hidden");
     }
   }
 
@@ -455,6 +697,7 @@ const DashboardPage = (() => {
     const manageButton = document.getElementById("manage-profile-button");
     const cancelButton = document.getElementById("cancel-child-management-button");
     const activateButton = document.getElementById("activate-child-button");
+    const deleteButton = document.getElementById("delete-child-button");
     const form = document.getElementById("child-management-form");
     const modeInput = document.getElementById("child-management-mode");
     const childIdInput = document.getElementById("child-management-child-id");
@@ -487,6 +730,52 @@ const DashboardPage = (() => {
 
         setActiveChild(childId);
         window.location.href = buildChildHref("parent-dashboard.html", childId);
+      });
+    }
+
+    if (deleteButton && childIdInput) {
+      deleteButton.addEventListener("click", () => {
+        const childId = childIdInput.value;
+        if (!childId) return;
+
+        const child = data.children.find((item) => item.id === childId);
+        if (!child) {
+          if (panelStatus) {
+            panelStatus.textContent = "Profil anak tidak ditemukan. Coba buka ulang panel ini.";
+          }
+          return;
+        }
+
+        if (data.children.length <= 1) {
+          if (panelStatus) {
+            panelStatus.textContent =
+              "Minimal harus ada satu profil anak di dashboard. Tambah anak baru dulu sebelum menghapus profil terakhir.";
+          }
+          return;
+        }
+
+        const confirmed = window.confirm(
+          `Hapus profil ${child.name}? Semua tugas, target, badge, streak, dan rekap demo anak ini juga akan ikut terhapus.`
+        );
+        if (!confirmed) {
+          return;
+        }
+
+        const result = removeChild(childId);
+        if (!result.ok) {
+          if (panelStatus) {
+            panelStatus.textContent =
+              result.reason === "last-child"
+                ? "Profil terakhir belum bisa dihapus agar dashboard tetap punya minimal satu anak."
+                : "Profil anak belum berhasil dihapus. Coba lagi sebentar.";
+          }
+          return;
+        }
+
+        window.location.href = buildChildHref(
+          "parent-dashboard.html",
+          result.nextChildId || getSelectedChildId()
+        );
       });
     }
 
@@ -737,13 +1026,16 @@ const DashboardPage = (() => {
   }
 
   function init() {
+    const session = requireSession();
+    if (!session) return;
+
     const childId = getSelectedChildId();
     if (!childId) return;
     const weekNumber = getSelectedWeekNumber();
     const bundle = getChildBundle(childId);
     const weekTasks = getWeekTasks(bundle.tasks, weekNumber);
 
-    renderHeader(bundle, weekNumber);
+    renderHeader(bundle, weekNumber, session);
     renderQuickStats(bundle, weekTasks);
     renderChildSelector(childId);
     renderWeekTabs(weekNumber, childId);
@@ -753,8 +1045,10 @@ const DashboardPage = (() => {
     renderBadgesAndStreak(bundle);
     renderMonthlyRecap(bundle);
     renderCharts(bundle);
-    renderCertificate(bundle);
+    renderCertificate(bundle, session);
+    bindSessionUI();
     bindChildManagementUI(childId);
+    bindTaskManagementUI(childId, weekNumber);
     bindExportImportUI(childId, weekNumber);
     bindInformationalButtons();
     bindCertificatePreviewUI();

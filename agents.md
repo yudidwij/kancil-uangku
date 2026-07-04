@@ -22,7 +22,7 @@ You must preserve the product intent:
 - Parent Dashboard must be clean, structured, trustworthy, and data-dense.
 - Child View must be playful, simple, colorful, and mobile-first.
 - The Kancil mascot must be used as a friendly learning companion, not as decorative clutter.
-- The 3 Kantong model — Tabung, Belanja, Berbagi — must remain a core product concept.
+- The 2 Kantong model — Tabungan dan Belanja — must remain a core product concept.
 
 ---
 
@@ -78,15 +78,15 @@ Use these exact brand colors:
 | Bright Yellow | `#FFC94A` | Badge, reward, achievement |
 | Mint Teal | `#5ECFC1` | Savings progress, success |
 | Cream BG | `#FFF8F0` | Main background |
-| Lavender | `#B39DDB` | Berbagi category |
+| Lavender | `#B39DDB` | Secondary accent |
 
 Category colors must remain consistent:
 
-1. Tabung = Mint/Teal.
+1. Tabungan = Mint/Teal.
 2. Belanja = Coral/Orange.
-3. Berbagi = Lavender.
-4. Badge = Yellow.
-5. Parent trust = Navy.
+3. Badge = Yellow.
+4. Parent trust = Navy.
+5. Lavender dipakai sebagai accent sekunder, bukan kantong utama.
 
 ---
 
@@ -116,7 +116,7 @@ Parent Dashboard should include:
 2. Child selector.
 3. Weekly tracking.
 4. Reward summary.
-5. Savings and pockets.
+5. Goals and financial composition.
 6. Badge and streak summary.
 7. Monthly recap.
 8. Chart visualization.
@@ -127,8 +127,8 @@ Child View should include:
 
 1. Welcome section with Kancil.
 2. This Week Mission.
-3. Big savings goal visual.
-4. Three pocket cards.
+3. Big child goal visual.
+4. Two pocket cards.
 5. Badge collection.
 6. Streak display.
 7. Kancil encouragement message.
@@ -252,8 +252,10 @@ When coding is explicitly approved:
 ```text
 kancil-uangku/
 ├── index.html
+├── login.html
 ├── parent-dashboard.html
 ├── child-view.html
+├── signup.html
 ├── assets/
 │   ├── icons/
 │   ├── mascot/
@@ -291,6 +293,13 @@ Core objects:
 6. Streak.
 7. MonthlyRecap.
 
+Current financial model:
+
+1. Total reward = 100%.
+2. Tabungan = 30% dana aman.
+3. Belanja = 70% dana goal anak.
+4. Goal progress diambil dari dana Belanja.
+
 Do not invent a conflicting data model without documenting the reason in a Decision Log.
 
 ---
@@ -304,13 +313,14 @@ Any generated frontend must pass these checks:
 3. Mobile layout works first.
 4. Parent Dashboard is data-dense but readable.
 5. Child View is simple and playful.
-6. Three pockets are visible and understandable.
-7. Savings goal progress is visually clear.
+6. Two pockets are visible and understandable.
+7. Child goal progress is visually clear.
 8. Badge and streak system is visible.
 9. Kancil appears in appropriate moments.
 10. No backend assumptions are introduced.
 11. No framework is introduced.
 12. No shame-based copy is used.
+13. Public pages stay aligned with the 30/70 reward explanation.
 
 ---
 
@@ -338,7 +348,7 @@ For coding phases, include:
 
 1. Do not skip approval gates.
 2. Do not add backend.
-3. Do not add login.
+3. Do not add real authentication backend.
 4. Do not add database.
 5. Do not use React/Next/Vite.
 6. Do not add payment features.

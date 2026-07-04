@@ -3,6 +3,7 @@ const ChildViewPage = (() => {
     animatePercent,
     data,
     buildChildHref,
+    requireSession,
     formatCurrency,
     getChildBundle,
     getCompletionStats,
@@ -13,6 +14,20 @@ const ChildViewPage = (() => {
     setHTML,
     setText,
   } = window.KancilApp;
+
+  function getBadgeTheme(badge) {
+    const themeMap = {
+      featured: { icon: "🫙", bubble: "bg-[#EAFBF8]", accent: "bg-[#5ECFC1]" },
+      saving: { icon: "🐿️", bubble: "bg-[#EAFBF8]", accent: "bg-[#5ECFC1]" },
+      spending: { icon: "🧺", bubble: "bg-[#FFF0EA]", accent: "bg-[#FF8C61]" },
+      streak: { icon: "🔥", bubble: "bg-[#FFF6D9]", accent: "bg-[#FFC94A]" },
+      mission: { icon: "🎯", bubble: "bg-[#EAF0FB]", accent: "bg-[#2E4374]" },
+      priority: { icon: "🧠", bubble: "bg-[#F2ECFA]", accent: "bg-[#B39DDB]" },
+      lesson: { icon: "🦌", bubble: "bg-[#FFF6D9]", accent: "bg-[#FFC94A]" },
+    };
+
+    return themeMap[badge.badgeType] || { icon: "⭐", bubble: "bg-[#FFF6D9]", accent: "bg-[#FFC94A]" };
+  }
 
   function renderHeader(bundle) {
     const backLink = document.getElementById("back-to-parent-link");
@@ -83,7 +98,10 @@ const ChildViewPage = (() => {
         .join("")
     );
 
-    const lockedBadge = bundle.badges.find((badge) => badge.status === "locked");
+    const monthlyBadges = bundle.badges.filter(
+      (badge) => (badge.month || bundle.monthlyRecap.month) === bundle.monthlyRecap.month
+    );
+    const lockedBadge = monthlyBadges.find((badge) => badge.status === "locked");
     setText(
       "mission-kancil-note",
       lockedBadge
@@ -109,8 +127,8 @@ const ChildViewPage = (() => {
     setText(
       "goal-milestone-note",
       goalPercent >= 75
-        ? "Sedikit lagi menuju target. Kancil bantu ingatkan lagi besok."
-        : "Kancil lihat kamu terus menabung pelan-pelan."
+        ? "Sedikit lagi menuju goal-mu. Kancil bantu ingatkan lagi besok."
+        : "Kancil lihat dana goal-mu terus bertambah pelan-pelan."
     );
 
     const jarFill = document.getElementById("goal-jar-fill");
@@ -135,36 +153,52 @@ const ChildViewPage = (() => {
   function renderPockets(bundle) {
     setText("child-pocket-save-amount", formatCurrency(bundle.pocket.saveAmount));
     setText("child-pocket-spend-amount", formatCurrency(bundle.pocket.spendAmount));
-    setText("child-pocket-share-amount", formatCurrency(bundle.pocket.shareAmount));
   }
 
   function renderBadges(bundle) {
-    const unlocked = bundle.badges.filter((badge) => badge.status === "unlocked");
-    const latestBadge = getLatestUnlockedBadge(bundle.badges);
-    const totalBadges = bundle.badges.length;
+    const monthlyBadges = bundle.badges.filter(
+      (badge) => (badge.month || bundle.monthlyRecap.month) === bundle.monthlyRecap.month
+    );
+    const unlocked = monthlyBadges.filter((badge) => badge.status === "unlocked");
+    const latestBadge = getLatestUnlockedBadge(monthlyBadges);
+    const totalBadges = monthlyBadges.length;
     const badgePercent = totalBadges ? Math.round((unlocked.length / totalBadges) * 100) : 0;
     const badgeEmptyState = document.getElementById("child-badge-empty-state");
-    setText("badge-count-summary", `${unlocked.length} badge terbuka`);
+    const featuredBadgeIcon = document.getElementById("featured-badge-icon");
+    setText("badge-count-summary", `${unlocked.length}/${totalBadges} badge bulan ini`);
     setText("featured-badge-name", latestBadge ? latestBadge.badgeName : "Belum ada badge");
     setText(
       "featured-badge-description",
-      latestBadge ? `Kancil bangga! ${latestBadge.description}` : "Badge pertama masih menunggu."
+      latestBadge ? `Kancil bangga! ${latestBadge.description}` : "Badge bulan ini masih menunggu untuk dibuka."
     );
+    setText("badge-month-summary", `Periode pencapaian: ${bundle.monthlyRecap.month}`);
+    if (featuredBadgeIcon) {
+      featuredBadgeIcon.textContent = latestBadge ? getBadgeTheme(latestBadge).icon : "🏅";
+    }
 
     setHTML(
       "badge-carousel",
-      bundle.badges
+      monthlyBadges
         .map((badge) => {
           const isLocked = badge.status === "locked";
+          const theme = getBadgeTheme(badge);
           return `
             <article class="w-48 rounded-[24px] ${
-              isLocked ? "border border-dashed border-[#2E4374]/18 bg-white" : "bg-[#FFF6D9]"
+              isLocked ? "border border-dashed border-[#2E4374]/18 bg-white" : `${theme.bubble}`
             } p-4">
-              <div class="text-3xl ${isLocked ? "opacity-60" : ""}" aria-hidden="true">
-                ${isLocked ? "🔒" : badge.badgeType === "sharing" ? "💜" : badge.badgeType === "streak" ? "🔥" : "⭐"}
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex h-14 w-14 items-center justify-center rounded-full ${isLocked ? "bg-[#FFF8F0]" : "bg-white"} text-3xl" aria-hidden="true">
+                  ${theme.icon}
+                </div>
+                <span class="inline-flex items-center rounded-full ${isLocked ? "bg-[#F2ECFA]" : "bg-white"} px-3 py-1 text-xs font-extrabold text-[#2E4374]">
+                  ${isLocked ? "🔒 Lucu" : "Terbuka"}
+                </span>
               </div>
               <h3 class="font-child-heading mt-3 text-2xl text-[#2E4374]">${badge.badgeName}</h3>
               <p class="mt-2 text-sm text-[#2E4374]/75">${badge.description}</p>
+              <p class="mt-3 text-xs font-bold ${isLocked ? "text-[#7E66B7]" : "text-[#2E4374]/60"}">
+                ${isLocked ? "Masih bisa dikejar bulan ini." : `Tercapai di ${badge.month}.`}
+              </p>
             </article>
           `;
         })
@@ -172,12 +206,15 @@ const ChildViewPage = (() => {
     );
 
     setText("badge-progress-text", `${badgePercent}% koleksi terbuka`);
-    setText("badge-progress-note", `${unlocked.length} dari ${totalBadges} badge sudah didapat`);
+    setText(
+      "badge-progress-note",
+      `${unlocked.length} dari ${totalBadges} badge berhasil dibuka. Awal bulan baru, badge bulanannya bisa dikejar lagi.`
+    );
     const badgeProgressBar = document.getElementById("badge-progress-bar");
     animatePercent(badgeProgressBar, "width", badgePercent);
 
     if (badgeEmptyState) {
-      badgeEmptyState.classList.toggle("hidden", unlocked.length > 0);
+      badgeEmptyState.classList.toggle("hidden", monthlyBadges.length > 0);
     }
   }
 
@@ -214,6 +251,9 @@ const ChildViewPage = (() => {
   }
 
   function init() {
+    const session = requireSession();
+    if (!session) return;
+
     const childId = getSelectedChildId();
     const bundle = getChildBundle(childId);
     const weekTasks = getWeekTasks(bundle.tasks, 2);

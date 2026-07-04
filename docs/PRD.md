@@ -13,7 +13,7 @@
 
 ## 1. Product Overview
 
-**Kancil Uangku** adalah web app edukasi keuangan untuk anak Indonesia yang membantu orang tua membimbing anak belajar mengelola uang melalui tugas mingguan, target tabungan, reward, badge, streak, dan konsep **3 Kantong: Tabung–Belanja–Berbagi**.
+**Kancil Uangku** adalah web app edukasi keuangan untuk anak Indonesia yang membantu orang tua membimbing anak belajar mengelola uang melalui tugas mingguan, goal anak, reward, badge, streak, dan konsep **2 Kantong: Tabungan–Belanja**.
 
 Produk ini merupakan rebuild dari existing app dan diarahkan menjadi aplikasi yang lebih:
 
@@ -22,6 +22,8 @@ Produk ini merupakan rebuild dari existing app dan diarahkan menjadi aplikasi ya
 3. Mobile-first karena mayoritas akses diasumsikan dari HP.
 4. Kuat secara identitas visual melalui maskot **Kancil**.
 5. Terstruktur sebagai Source of Truth agar mudah dieksekusi oleh Codex/agent secara bertahap.
+6. Memiliki landing page yang menjelaskan value produk sebelum masuk ke area aplikasi.
+7. Memiliki flow akun awal berbasis frontend-only untuk signup dan login demo.
 
 ---
 
@@ -38,6 +40,9 @@ Maskot Kancil digunakan pada:
 5. Child View hero section.
 6. Sertifikat pencapaian.
 7. Progress milestone.
+8. Landing page hero illustration.
+9. CTA banner dark section.
+10. Login dan signup support illustration.
 
 Kancil harus terasa:
 
@@ -69,7 +74,7 @@ Orang tua yang ingin:
 2. Melacak tugas mingguan anak.
 3. Memberikan reward yang sehat dan terarah.
 4. Mengelola lebih dari satu anak.
-5. Melihat progress tabungan dan perilaku finansial anak.
+5. Melihat progress goal anak, tabungan aman, dan perilaku finansial anak.
 6. Menghasilkan rekap bulanan atau sertifikat pencapaian.
 7. Melakukan export/import data.
 
@@ -78,9 +83,9 @@ Orang tua yang ingin:
 Anak yang ingin:
 
 1. Melihat tugas minggu ini.
-2. Mengetahui progress tabungan.
+2. Mengetahui progress goal yang sedang dikejar.
 3. Mendapat badge atau apresiasi.
-4. Melihat target tabungan secara visual.
+4. Melihat target goal secara visual.
 5. Merasa ditemani oleh maskot Kancil.
 
 ### 4.3 Supporting User — Educator / Facilitator
@@ -101,7 +106,7 @@ Opsional pada fase lanjutan:
 1. Mengubah existing app menjadi produk frontend yang lebih modern, scalable, dan mudah dikembangkan.
 2. Memisahkan pengalaman orang tua dan anak agar masing-masing sesuai kebutuhan.
 3. Menjadikan aplikasi lebih kuat secara brand melalui maskot Kancil.
-4. Memperkuat value edukasi melalui konsep **Tabung–Belanja–Berbagi**.
+4. Memperkuat value edukasi melalui konsep **Tabungan–Belanja**.
 5. Menyediakan dashboard orang tua yang data-dense, namun tetap mudah digunakan.
 6. Menyediakan Child View yang sangat sederhana, colorful, dan menyenangkan.
 7. Menyiapkan struktur frontend yang bisa dieksekusi oleh agent/codex secara bertahap.
@@ -115,7 +120,7 @@ Parent dapat:
 3. Menentukan reward.
 4. Memantau progress anak.
 5. Melihat rekap bulanan.
-6. Melihat visualisasi tabungan dan pencapaian.
+6. Melihat visualisasi tabungan aman, goal, dan pencapaian.
 7. Export/import data.
 8. Mencetak atau menghasilkan preview sertifikat.
 
@@ -124,8 +129,8 @@ Parent dapat:
 Anak dapat:
 
 1. Melihat tugas minggu ini.
-2. Melihat progress tabungan.
-3. Melihat tiga kantong uang.
+2. Melihat progress goal.
+3. Melihat dua kantong uang.
 4. Melihat badge dan streak.
 5. Mendapat pesan apresiasi dari Kancil.
 
@@ -137,24 +142,28 @@ Anak dapat:
 
 1. Parent Dashboard.
 2. Child View.
-3. Goal & Savings Module.
-4. Three Pockets Concept: Tabung, Belanja, Berbagi.
-5. Badge & Achievement System.
-6. Streak System.
-7. Weekly Task Tracker.
-8. Monthly Recap.
-9. Basic Data Visualization.
-10. Certificate Preview.
-11. Export / Import UI.
-12. Empty State with Kancil Mascot.
-13. Responsive Mobile-First Layout.
-14. Static Demo Data / Local Data Simulation.
-15. Tailwind CSS Play CDN Native Implementation Plan.
+3. Landing Page.
+4. Create Account Page.
+5. Login Page.
+6. Child Goal & Financial Composition Module.
+7. Two Pockets Concept: Tabungan dan Belanja.
+8. Badge & Achievement System.
+9. Streak System.
+10. Weekly Task Tracker.
+11. Monthly Recap.
+12. Basic Data Visualization.
+13. Certificate Preview.
+14. Export / Import UI.
+15. Empty State with Kancil Mascot.
+16. Responsive Mobile-First Layout.
+17. Static Demo Data / Local Data Simulation.
+18. Tailwind CSS Play CDN Native Implementation Plan.
+19. Frontend-only auth flow simulation for signup/login.
 
 ### 6.2 Out of Scope — Current Phase
 
 1. Backend development.
-2. Authentication system.
+2. Authentication system dengan backend nyata.
 3. Database integration.
 4. Payment gateway.
 5. Real user account system.
@@ -164,9 +173,58 @@ Anak dapat:
 9. Parent-child permission system with real authentication.
 10. Real-time sync across devices.
 
+Catatan:
+
+1. `signup.html` dan `login.html` saat ini hanya frontend-only.
+2. Data akun dan session disimulasikan melalui browser storage.
+3. Belum ada API, verifikasi akun, atau server-side protection.
+
 ---
 
 ## 7. Core Modules
+
+## 7.0 Module 0 — Entry & Account Flow
+
+### Purpose
+
+Menyediakan pintu masuk produk yang jelas sebelum user masuk ke Parent Dashboard, sekaligus memberi flow akun awal yang ringan untuk prototype frontend.
+
+### Main Features
+
+#### 7.0.1 Landing Page
+
+- Navigation bar.
+- Hero section dengan ilustrasi Kancil.
+- Section cara kerja.
+- Section keunggulan.
+- FAQ yang menjelaskan program edukasi dan manfaat untuk parent/child.
+- CTA banner.
+- Footer.
+
+#### 7.0.2 Create Account
+
+- Nama orang tua.
+- Email.
+- Password.
+- Konfirmasi password.
+- Persetujuan syarat.
+- Validasi dasar frontend.
+
+#### 7.0.3 Login Demo
+
+- Email.
+- Password.
+- Toggle show/hide password.
+- Validasi dasar frontend.
+- Session demo sebelum redirect ke dashboard.
+
+### UX Principle
+
+Flow awal harus:
+
+1. Ramah dan jelas.
+2. Menjelaskan manfaat produk sebelum meminta aksi.
+3. Jujur bahwa auth saat ini masih simulasi frontend-only.
 
 ## 7.1 Module 1 — Parent Dashboard
 
@@ -181,7 +239,7 @@ Memberikan orang tua kendali penuh terhadap setup, tracking, reward, rekap, dan 
 - Jumlah anak aktif.
 - Total tugas minggu ini.
 - Completion rate.
-- Total tabungan.
+- Total tabungan aman.
 - Badge terbaru.
 - Streak aktif.
 
@@ -210,8 +268,9 @@ Memberikan orang tua kendali penuh terhadap setup, tracking, reward, rekap, dan 
 #### 7.1.5 Monthly Recap
 
 - Total reward.
-- Total tabungan.
-- Rasio Tabung–Belanja–Berbagi.
+- Total tabungan aman.
+- Total dana belanja/goal.
+- Rasio Tabungan–Belanja.
 - Jumlah tugas selesai.
 - Badge didapat.
 - Streak terbaik.
@@ -219,14 +278,15 @@ Memberikan orang tua kendali penuh terhadap setup, tracking, reward, rekap, dan 
 #### 7.1.6 Visualization
 
 - Bar chart tugas mingguan.
-- Trend tabungan bulanan.
-- Progress per anak.
-- Pocket distribution chart.
+- Trend tabungan aman bulanan.
+- Progress goal per anak.
+- Financial composition distribution chart.
 
 #### 7.1.7 Certificate
 
 - Preview sertifikat.
 - Nama anak.
+- Nama orang tua dari session demo/login aktif.
 - Pencapaian utama.
 - Badge utama.
 - Bulan periode.
@@ -255,7 +315,7 @@ Parent Dashboard harus:
 
 ### Purpose
 
-Memberikan pengalaman sederhana untuk anak agar mereka bisa melihat progress, tugas, tabungan, dan badge tanpa merasa seperti menggunakan dashboard orang dewasa.
+Memberikan pengalaman sederhana untuk anak agar mereka bisa melihat progress goal, tugas, tabungan aman, dan badge tanpa merasa seperti menggunakan dashboard orang dewasa.
 
 ### Main Features
 
@@ -272,7 +332,7 @@ Memberikan pengalaman sederhana untuk anak agar mereka bisa melihat progress, tu
 - Ikon visual.
 - Label sederhana.
 
-#### 7.2.3 Savings Goal
+#### 7.2.3 Child Goal
 
 - Nama target.
 - Nominal target.
@@ -280,20 +340,21 @@ Memberikan pengalaman sederhana untuk anak agar mereka bisa melihat progress, tu
 - Progress visual toples koin / balon terisi.
 - Pesan Kancil ketika progress naik.
 
-#### 7.2.4 Three Pockets
+#### 7.2.4 Two Pockets
 
-- Tabung.
+- Tabungan.
 - Belanja.
-- Berbagi.
 - Visual warna berbeda.
 - Bahasa sederhana.
 
 #### 7.2.5 Badge Collection
 
-- Badge aktif.
-- Badge terkunci.
+- Badge bulan aktif.
+- Badge terkunci untuk bulan berjalan.
 - Badge baru.
+- Ikon badge sesuai tema.
 - Keterangan pendek.
+- Reset capaian per bulan melalui cycle rekap bulanan.
 
 #### 7.2.6 Streak
 
@@ -315,24 +376,25 @@ Child View harus:
 
 ---
 
-## 7.3 Module 3 — Goal & Savings Module
+## 7.3 Module 3 — Child Goal & Financial Composition Module
 
 ### Purpose
 
-Membantu anak memahami bahwa uang bisa diarahkan menuju tujuan tertentu, bukan hanya dikumpulkan atau dibelanjakan.
+Membantu anak memahami bahwa reward uang perlu dibagi: sebagian disimpan aman, sebagian lagi diarahkan ke goal yang ingin dicapai.
 
 ### Main Features
 
-1. Set Target Tabungan.
+1. Set Goal Anak.
 2. Nama tujuan.
 3. Nominal target.
 4. Estimasi waktu.
 5. Ikon tujuan.
-6. Current amount.
+6. Current amount dari dana belanja.
 7. Target amount.
 8. Percentage progress.
 9. Remaining amount.
 10. Progress milestone: 25%, 50%, 75%, 100%.
+11. Komposisi keuangan: Total reward 100%, Tabungan 30%, Belanja 70%.
 
 ### Visual Metaphor Options
 
@@ -343,26 +405,26 @@ Membantu anak memahami bahwa uang bisa diarahkan menuju tujuan tertentu, bukan h
 
 ### Parent Control
 
-1. Orang tua menginput nominal.
-2. Anak melihat progress.
-3. Anak tidak mengubah data finansial utama tanpa persetujuan.
+1. Orang tua menginput nominal target.
+2. Progress goal bertambah dari dana belanja 70%.
+3. Tabungan 30% tetap disimpan sebagai dana aman.
+4. Anak tidak mengubah data finansial utama tanpa persetujuan.
 
 ---
 
-## 7.4 Module 4 — Three Pockets: Tabung–Belanja–Berbagi
+## 7.4 Module 4 — Two Pockets: Tabungan–Belanja
 
 ### Purpose
 
-Mengajarkan anak bahwa uang tidak hanya memiliki satu fungsi. Setiap uang masuk dapat dialokasikan ke tiga kantong:
+Mengajarkan anak bahwa uang masuk perlu dibagi dengan tujuan jelas. Setiap reward uang dialokasikan ke dua kantong:
 
-1. **Tabung** — untuk tujuan masa depan.
-2. **Belanja** — untuk kebutuhan/keinginan kecil.
-3. **Berbagi** — untuk membantu orang lain.
+1. **Tabungan** — 30% untuk tujuan masa depan, dana darurat, atau kebiasaan simpan jangka panjang.
+2. **Belanja** — 70% untuk kebutuhan/keinginan kecil dan sumber dana menuju target belanja anak.
 
 ### Main Features
 
 1. Input uang masuk.
-2. Alokasi ke tiga kantong.
+2. Alokasi otomatis ke dua kantong.
 3. Visual pocket cards.
 4. Total per kantong.
 5. Rasio alokasi.
@@ -374,11 +436,10 @@ Mengajarkan anak bahwa uang tidak hanya memiliki satu fungsi. Setiap uang masuk 
 
 Default awal:
 
-- Tabung: 50%.
-- Belanja: 30%.
-- Berbagi: 20%.
+- Tabungan: 30%.
+- Belanja: 70%.
 
-Angka ini harus bisa disesuaikan oleh orang tua pada fase interaktif.
+Angka ini menjadi aturan default produk pada fase frontend saat ini.
 
 ---
 
@@ -392,7 +453,7 @@ Mendorong kebiasaan baik tanpa menjadikan uang sebagai satu-satunya motivasi.
 
 1. **7 Hari Beruntun** — anak menyelesaikan aktivitas selama 7 hari berturut-turut.
 2. **Penabung Konsisten** — anak menabung secara rutin selama beberapa minggu.
-3. **Sahabat Berbagi** — anak mengalokasikan uang ke kantong Berbagi.
+3. **Belanja Bijak** — anak memakai dana belanja dengan rencana.
 4. **Misi Mingguan Selesai** — semua tugas minggu ini selesai.
 5. **Kancil Cerdik** — anak menyelesaikan mini-lesson.
 6. **Jago Pilih Prioritas** — anak berhasil membedakan kebutuhan dan keinginan.
@@ -404,6 +465,8 @@ Mendorong kebiasaan baik tanpa menjadikan uang sebagai satu-satunya motivasi.
 3. Tidak menggunakan ranking antar-anak.
 4. Tidak membandingkan anak satu dengan yang lain.
 5. Fokus pada progress personal.
+6. Badge dipantau per bulan aktif.
+7. Badge bulan baru dapat dikejar lagi pada periode bulanan berikutnya.
 
 ---
 
@@ -435,24 +498,24 @@ Mendorong kebiasaan baik tanpa menjadikan uang sebagai satu-satunya motivasi.
 1. Anak membuka Child View.
 2. Anak melihat sapaan Kancil.
 3. Anak melihat tugas minggu ini.
-4. Anak melihat progress tabungan.
+4. Anak melihat progress goal.
 5. Anak melihat badge.
 6. Anak membaca pesan motivasi.
 
-### Flow 4 — Savings Goal
+### Flow 4 — Child Goal
 
-1. Parent membuat target tabungan.
+1. Parent membuat goal anak.
 2. Parent menentukan nominal target.
 3. Parent input uang masuk.
-4. Sistem membagi ke tiga kantong.
-5. Anak melihat progress visual.
+4. Sistem membagi otomatis ke dua kantong.
+5. Progress goal anak bertambah dari dana belanja 70%.
 6. Badge muncul saat milestone tercapai.
 
 ### Flow 5 — Monthly Recap
 
 1. Parent memilih bulan.
 2. Sistem menampilkan ringkasan.
-3. Parent melihat chart tugas dan tabungan.
+3. Parent melihat chart tugas dan tabungan aman.
 4. Parent melihat badge dan streak.
 5. Parent dapat preview sertifikat.
 6. Parent export data bila diperlukan.
@@ -461,13 +524,21 @@ Mendorong kebiasaan baik tanpa menjadikan uang sebagai satu-satunya motivasi.
 
 ## 9. Information Architecture
 
+### 9.0 Entry Flow
+
+1. `index.html` sebagai landing page utama.
+2. `signup.html` untuk create account frontend-only.
+3. `login.html` untuk login frontend-only.
+4. `parent-dashboard.html` untuk area orang tua setelah login demo.
+5. `child-view.html` untuk area anak berdasarkan pilihan parent.
+
 ### 9.1 Parent Dashboard
 
 1. Header.
 2. Quick Stats.
 3. Child Selector.
 4. Weekly Task Tracker.
-5. Savings & Pockets.
+5. Goals & Financial Composition.
 6. Badge & Streak.
 7. Monthly Recap.
 8. Certificate.
@@ -478,8 +549,8 @@ Mendorong kebiasaan baik tanpa menjadikan uang sebagai satu-satunya motivasi.
 
 1. Welcome.
 2. Mission This Week.
-3. Savings Goal.
-4. Three Pockets.
+3. Child Goal.
+4. Two Pockets.
 5. Badge Collection.
 6. Kancil Message.
 
@@ -538,10 +609,10 @@ pocket {
   childId
   saveAmount
   spendAmount
-  shareAmount
   allocationSavePercent
   allocationSpendPercent
-  allocationSharePercent
+  baseSaveAmount
+  baseSpendAmount
 }
 ```
 
@@ -556,6 +627,7 @@ badge {
   description
   unlockedAt
   status
+  month
 }
 ```
 
@@ -581,9 +653,13 @@ monthlyRecap {
   totalReward
   totalSaved
   totalSpent
-  totalShared
   badgesUnlocked
   bestStreak
+  baseTotalReward
+  baseTotalSaved
+  baseTotalSpent
+  baseTotalTasks
+  baseCompletedTasks
 }
 ```
 
@@ -596,10 +672,10 @@ monthlyRecap {
 | FR-001 | Manage children | Parent can manage up to 10 children. |
 | FR-002 | Create weekly tasks | Parent can create weekly tasks with reward and status. |
 | FR-003 | Track task completion | Parent can mark tasks as completed and see weekly progress. |
-| FR-004 | Create savings goal | Parent can create savings goals for each child. |
-| FR-005 | Child savings view | Child can view savings progress visually. |
-| FR-006 | Three pockets | System supports Tabung, Belanja, Berbagi allocation. |
-| FR-007 | Badge display | System displays unlocked and locked badges. |
+| FR-004 | Create child goal | Parent can create purchase goals for each child. |
+| FR-005 | Child goal view | Child can view goal progress visually. |
+| FR-006 | Two pockets | System supports 30% Tabungan and 70% Belanja allocation. |
+| FR-007 | Monthly badge display | System displays unlocked and locked badges for the active monthly period. |
 | FR-008 | Streak display | System displays active and best streak. |
 | FR-009 | Monthly recap | Parent can view monthly recap. |
 | FR-010 | Export/import | Parent can access export/import UI. |
@@ -660,7 +736,7 @@ monthlyRecap {
 ### 13.2 Child View Metrics
 
 1. Anak dapat memahami tugas minggu ini tanpa bantuan panjang.
-2. Anak dapat melihat target tabungan secara visual.
+2. Anak dapat melihat target goal secara visual.
 3. Anak merasa mendapat apresiasi dari badge dan Kancil.
 4. Tampilan tidak terlalu kompleks.
 
@@ -682,10 +758,11 @@ monthlyRecap {
 4. Maskot Kancil digunakan sebagai emotional identity.
 5. Reward tidak hanya berupa uang.
 6. Badge digunakan untuk mendorong kebiasaan positif.
-7. Konsep tiga kantong menjadi core financial model.
+7. Konsep dua kantong menjadi core financial model.
 8. Frontend fase pertama menggunakan HTML responsive + Tailwind Play CDN native.
 9. Tidak ada backend sampai approval fase lanjutan.
 10. Semua fitur disusun sebagai Source of Truth agar mudah dieksekusi bertahap.
+11. Sertifikat menampilkan nama orang tua dari session demo aktif.
 
 ---
 
@@ -697,7 +774,7 @@ Sebelum masuk ke coding, dokumen ini perlu disetujui pada aspek:
 2. Nama modul.
 3. Struktur Parent Dashboard.
 4. Struktur Child View.
-5. Konsep tiga kantong.
+5. Konsep dua kantong.
 6. Badge/streak logic.
 7. Visual direction.
 8. Fase implementasi.

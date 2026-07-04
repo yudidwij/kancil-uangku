@@ -12,8 +12,8 @@ Keduanya sudah memenuhi arah dasar SOT:
 
 1. Parent Dashboard terasa lebih rapi, trustable, dan data-dense.
 2. Child View terasa lebih playful, visual, dan mobile-first.
-3. Konsep `Tabung–Belanja–Berbagi` terlihat konsisten di parent dan child.
-4. Badge, streak, goal progress, monthly recap, certificate preview, dan export/import UI sudah terwakili.
+3. Konsep `Tabungan–Belanja` terlihat konsisten di parent dan child.
+4. Badge bulanan, streak, goal progress, monthly recap, certificate preview, dan export/import UI sudah terwakili.
 5. Maskot Kancil hadir sebagai pendamping positif, bukan dekorasi berlebihan.
 
 Frontend prototype ini sudah cukup kuat untuk:
@@ -28,12 +28,15 @@ Frontend prototype ini sudah cukup kuat untuk:
 
 Deliverables yang sudah ada di repo:
 
-1. `parent-dashboard.html`
-2. `child-view.html`
-3. `data/demo-data.js`
-4. `js/app.js`
-5. `js/dashboard.js`
-6. `js/child-view.js`
+1. `index.html`
+2. `signup.html`
+3. `login.html`
+4. `parent-dashboard.html`
+5. `child-view.html`
+6. `data/demo-data.js`
+7. `js/app.js`
+8. `js/dashboard.js`
+9. `js/child-view.js`
 
 ## 3. SOT Alignment Check
 
@@ -42,9 +45,9 @@ Deliverables yang sudah ada di repo:
 1. Parent Dashboard.
 2. Child View.
 3. Weekly task tracking.
-4. Goal savings progress.
-5. Three pockets model.
-6. Badge display.
+4. Child goal progress.
+5. Two pockets model.
+6. Monthly badge display.
 7. Streak display.
 8. Monthly recap.
 9. Simple chart visualization.
@@ -53,6 +56,7 @@ Deliverables yang sudah ada di repo:
 12. Empty states.
 13. Responsive mobile-first structure.
 14. Shared demo data rendering.
+15. Landing page, signup, dan login demo flow.
 
 ### Intentionally Not Implemented Yet
 
@@ -60,7 +64,7 @@ Deliverables yang sudah ada di repo:
 2. Authentication.
 3. Database.
 4. Real import persistence.
-5. LocalStorage persistence.
+5. LocalStorage persistence penuh lintas browser.
 6. Multi-device sync.
 7. Parent editing workflow penuh.
 8. Real task completion mutation.
@@ -76,6 +80,7 @@ Deliverables yang sudah ada di repo:
 5. Progress visuals ringan dan tidak memakai library berat.
 6. Copy cukup aman untuk konteks anak.
 7. Struktur data frontend sudah cukup jelas untuk dipetakan ke persistence nanti.
+8. Landing page sudah selaras dengan model reward 30/70 dan FAQ program.
 
 ### Residual Gaps
 
@@ -93,6 +98,7 @@ Frontend saat ini cukup siap untuk masuk ke tahap persistence ringan, dengan cat
 2. Rendering saat ini masih mengandalkan satu sumber data demo global.
 3. Routing antar experience masih sederhana berbasis file + query param.
 4. Untuk fase berikutnya, persistence paling aman dimulai dari `localStorage simulation` sebelum backend nyata.
+5. Sertifikat sudah memakai nama parent dari session demo aktif.
 
 Rekomendasi readiness:
 
@@ -105,7 +111,7 @@ Rekomendasi readiness:
 
 ### Priority 1 — Prototype Hardening
 
-1. Tambahkan localStorage simulation untuk child aktif, data import, dan state dashboard.
+1. Hardening localStorage simulation untuk child aktif, data import, dan state dashboard.
 2. Buat mutation ringan untuk update status tugas, tanpa backend.
 3. Tambahkan fallback state bila query param anak tidak valid.
 4. Rapikan feedback UI setelah import/reset agar lebih terprediksi.
@@ -121,7 +127,7 @@ Rekomendasi readiness:
 
 1. Tambahkan mini-lesson card.
 2. Tambahkan Kancil notification bubble yang ringan.
-3. Tambahkan variasi badge tambahan.
+3. Tambahkan variasi badge tambahan dan syarat badge yang lebih eksplisit.
 4. Tambahkan milestone goal visual yang lebih kaya tapi tetap ringan.
 
 ### Priority 4 — Production Preparation

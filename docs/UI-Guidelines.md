@@ -60,7 +60,7 @@ Aplikasi tidak boleh terlihat seperti aplikasi keuangan orang dewasa yang kaku, 
 | Bright Yellow | Kuning cerah | `#FFC94A` | Badge, reward, stars |
 | Mint Teal | Mint/teal muda | `#5ECFC1` | Savings progress, success state |
 | Cream BG | Krem/off-white | `#FFF8F0` | Main background |
-| Lavender | Ungu lavender lembut | `#B39DDB` | Berbagi category, soft accent |
+| Lavender | Ungu lavender lembut | `#B39DDB` | Soft accent, secondary highlight |
 
 ### 3.2 Semantic Color Usage
 
@@ -70,7 +70,7 @@ Aplikasi tidak boleh terlihat seperti aplikasi keuangan orang dewasa yang kaku, 
 | Action / CTA | Coral CTA |
 | Achievement / Badge | Bright Yellow |
 | Savings / Success | Mint Teal |
-| Sharing / Empathy | Lavender |
+| Secondary accent | Lavender |
 | Background | Cream BG |
 | Warning gentle | Coral with light background |
 | Neutral card | White / Cream |
@@ -79,9 +79,8 @@ Aplikasi tidak boleh terlihat seperti aplikasi keuangan orang dewasa yang kaku, 
 
 | Category | Color |
 |---|---|
-| Tabung | Mint/Teal `#5ECFC1` |
+| Tabungan | Mint/Teal `#5ECFC1` |
 | Belanja | Coral/Orange `#FF8C61` |
-| Berbagi | Lavender `#B39DDB` |
 | Badge | Yellow `#FFC94A` |
 | Parent trust | Navy `#2E4374` |
 
@@ -116,6 +115,20 @@ Tone:
 2. Professional.
 3. Efficient.
 4. Easy to scan.
+
+### 4.1.a Landing Page, Login, Signup
+
+Recommended fonts:
+
+1. Inter.
+2. Poppins.
+
+Tone:
+
+1. Warm.
+2. Professional.
+3. Friendly.
+4. Marketing-friendly.
 
 ### 4.2 Child View
 
@@ -162,6 +175,21 @@ Tone:
 6. Parent Dashboard can use denser grid.
 7. Child View must use single-column dominant layout.
 
+### 5.1.a Public Page Layout
+
+Landing Page:
+
+1. Hero-first.
+2. Illustration-led.
+3. Strong CTA hierarchy.
+4. Section spacing lebih lega dibanding dashboard.
+
+Login / Signup:
+
+1. Centered form card.
+2. Single focus action.
+3. Supporting illustration boleh ada, tapi tidak boleh mengganggu form.
+
 ### 5.2 Parent Dashboard Layout
 
 Recommended sections:
@@ -171,7 +199,7 @@ Recommended sections:
 3. Child Selector.
 4. Weekly Progress.
 5. Task Table/Card List.
-6. Savings & Pockets.
+6. Goals & Financial Composition.
 7. Badge/Streak Summary.
 8. Monthly Analytics.
 9. Certificate / Export Tools.
@@ -196,8 +224,8 @@ Recommended sections:
 
 1. Hero with Kancil.
 2. This Week Mission.
-3. Big Savings Goal Visual.
-4. Three Pockets.
+3. Big Child Goal Visual.
+4. Two Pockets.
 5. Badge Carousel.
 6. Kancil Encouragement.
 
@@ -247,6 +275,21 @@ Style:
 2. Navy border/text.
 3. Rounded 14–18px.
 
+### Outline / Auth Button
+
+Usage:
+
+1. Masuk.
+2. Kembali ke landing.
+3. Secondary auth action.
+
+Style:
+
+1. White atau transparent background.
+2. Navy border/text.
+3. Rounded 16–20px.
+4. Light shadow.
+
 ### Child Button
 
 Usage:
@@ -284,6 +327,16 @@ Usage:
 3. Monthly recap.
 4. Pocket breakdown.
 
+### Marketing / Form Cards
+
+Style:
+
+1. White background.
+2. Radius 24–32px.
+3. Soft shadow lebih terasa.
+4. Spacing lega.
+5. Cocok untuk landing support block, login, dan signup.
+
 ### Child Cards
 
 Style:
@@ -305,7 +358,7 @@ Usage:
 
 ## 6.3 Progress Bars
 
-### Savings Progress Bar
+### Safe Savings Progress Bar
 
 Style:
 
@@ -314,6 +367,16 @@ Style:
 3. Animated width.
 4. Label percentage.
 5. Optional coin icon.
+
+### Goal Progress Bar
+
+Style:
+
+1. Coral fill.
+2. Rounded full.
+3. Animated width or jar-fill height.
+4. Label percentage.
+5. Harus konsisten dengan dana belanja sebagai sumber goal.
 
 ### Goal Visual Alternatives
 
@@ -328,6 +391,7 @@ Style:
 2. Do not overuse motion.
 3. Progress must show actual percentage.
 4. Always include text label, not only visual.
+5. Goal anak dan tabungan aman harus dibedakan warnanya dengan jelas.
 
 ---
 
@@ -347,6 +411,8 @@ Style:
 3. Small Kancil accent.
 4. Icon + title.
 5. Short explanation.
+6. Locked badge memakai gembok lucu atau chip terkunci yang ramah anak.
+7. Setiap badge punya ikon sesuai tema.
 
 ### Badge Example
 
@@ -354,6 +420,12 @@ Style:
 Icon: small flame/star.  
 Color: Yellow + Coral.  
 Message: “Kancil bangga! Kamu konsisten minggu ini.”
+
+### Monthly Badge Rule
+
+1. Child View menampilkan badge untuk bulan aktif.
+2. Badge terkunci tetap tampil agar anak tahu target yang masih bisa dikejar.
+3. Awal bulan baru, badge bulan berjalan dapat dikejar lagi sebagai target periode berikutnya.
 
 ---
 
@@ -369,9 +441,9 @@ Empty state wajib menggunakan maskot Kancil.
 
 “Misi minggu ini masih kosong. Buat misi kecil pertama bersama Kancil.”
 
-### No Savings Goal Yet
+### No Child Goal Yet
 
-“Kancil siap bantu menabung. Tentukan tujuan pertamamu.”
+“Kancil siap bantu menyusun goal pertama. Tentukan targetmu.”
 
 ### No Badge Yet
 
@@ -418,6 +490,14 @@ Kancil berperan sebagai:
 4. Kancil tidak boleh menyampaikan pesan yang membuat anak merasa gagal.
 5. Kancil dapat muncul sebagai avatar, badge icon, empty state, notification bubble, dan mini-lesson guide.
 
+### 7.4 Public Illustration Rules
+
+1. Landing hero menggunakan ilustrasi Kancil besar sebagai focal point.
+2. CTA banner dark navy boleh memakai siluet atau maskot kecil.
+3. Login/signup boleh memakai ilustrasi support ukuran medium.
+4. Untuk landing page statis, inline SVG dianjurkan agar scalable dan tanpa asset eksternal.
+5. Gaya visual: flat, kawaii, bentuk sederhana, outline ringan.
+
 ---
 
 ## 8. Iconography
@@ -433,9 +513,9 @@ Kancil berperan sebagai:
 
 | Concept | Icon |
 |---|---|
-| Tabung | Jar / coin |
+| Tabungan | Jar / coin |
 | Belanja | Small basket |
-| Berbagi | Heart / hands |
+| Accent edukasi | Heart / sparkle |
 | Badge | Star / medal |
 | Streak | Flame / footprints |
 | Task | Checklist |
@@ -472,10 +552,18 @@ Required visuals:
 | Chart | Color |
 |---|---|
 | Weekly Tasks | Coral |
-| Savings Trend | Mint |
+| Tabungan Trend | Mint |
 | Spending | Coral |
-| Sharing | Lavender |
 | Badge | Yellow |
+
+### 9.4 Public Page Content Direction
+
+Landing page FAQ dan supporting copy harus:
+
+1. Menjelaskan manfaat program edukasi finansial anak.
+2. Menjelaskan logika reward 100% menjadi tabungan 30% dan dana belanja 70%.
+3. Menghindari FAQ teknis seperti status backend pada area marketing utama.
+4. Menjaga CTA tetap hangat, aktif, dan selaras dengan karakter Kancil.
 
 ---
 
@@ -517,7 +605,7 @@ Use clear professional labels:
 
 1. “Progress Minggu Ini”.
 2. “Rekap Bulanan”.
-3. “Total Tabungan”.
+3. “Total Tabungan Aman”.
 4. “Tugas Selesai”.
 5. “Export Data”.
 6. “Preview Sertifikat”.
@@ -527,11 +615,12 @@ Use clear professional labels:
 Use friendly child-facing language:
 
 1. “Misi Minggu Ini”.
-2. “Tabunganku”.
-3. “Kantong Berbagi”.
+2. “Goal Belanjaku”.
+3. “Dana Belanjaku”.
 4. “Badge Hebatku”.
 5. “Kancil bangga sama kamu!”.
 6. “Sedikit lagi menuju target!”.
+7. “Masih bisa dikejar bulan ini.”.
 
 ### 11.4 Avoid
 

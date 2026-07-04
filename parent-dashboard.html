@@ -93,6 +93,10 @@
 
           <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:justify-end">
             <div class="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm">
+              <p class="text-white/65">Orang tua</p>
+              <p id="parent-session-name" class="mt-1 font-semibold">-</p>
+            </div>
+            <div class="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm">
               <p class="text-white/65">Anak aktif</p>
               <p id="active-child-name" class="mt-1 font-semibold">-</p>
             </div>
@@ -113,6 +117,13 @@
               type="button"
             >
               Tambah Anak
+            </button>
+            <button
+              id="logout-button"
+              class="min-h-[44px] rounded-[18px] border border-white/20 bg-transparent px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10 focus:outline-none focus:ring-4 focus:ring-white/20"
+              type="button"
+            >
+              Logout
             </button>
           </div>
         </div>
@@ -229,7 +240,7 @@
                 Tambah Profil Anak
               </h3>
               <p id="child-management-description" class="mt-2 text-sm text-[#2E4374]/70">
-                Tambahkan profil baru untuk mulai memantau misi, target tabungan, dan 3 kantong.
+                Tambahkan profil baru untuk mulai memantau misi, goal anak, tabungan aman, dan 2 kantong.
               </p>
             </div>
             <button
@@ -269,7 +280,7 @@
                   class="min-h-[44px] w-full rounded-2xl border border-[#2E4374]/12 bg-[#FFF8F0] px-4 py-3 text-sm text-[#2E4374] outline-none transition focus:border-[#2E4374]/35 focus:ring-4 focus:ring-[#2E4374]/10"
                   type="text"
                   maxlength="80"
-                  placeholder="Contoh: Mulai rajin menabung mingguan"
+                  placeholder="Contoh: Mulai rajin atur uang mingguan"
                 />
               </div>
 
@@ -314,6 +325,13 @@
                 >
                   Jadikan Anak Aktif
                 </button>
+                <button
+                  id="delete-child-button"
+                  class="hidden min-h-[44px] rounded-[18px] border border-[#FF8C61]/20 bg-[#FFF0EA] px-5 py-3 text-sm font-semibold text-[#FF8C61]"
+                  type="button"
+                >
+                  Hapus Anak
+                </button>
               </div>
             </form>
 
@@ -322,7 +340,7 @@
                 Ringkasan Panel
               </p>
               <p id="child-panel-status" class="mt-3 text-sm text-[#2E4374]/75">
-                Profil baru akan otomatis mendapat target tabungan awal, ringkasan 3 kantong, dan empty state tugas mingguan.
+                Profil baru akan otomatis mendapat goal awal, ringkasan 2 kantong, dan empty state tugas mingguan.
               </p>
               <div class="mt-4 rounded-2xl bg-white/80 p-4 text-sm text-[#2E4374]/75">
                 <p class="font-semibold text-[#2E4374]">Catatan</p>
@@ -371,6 +389,198 @@
             </div>
           </div>
 
+          <div class="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div class="text-sm text-[#2E4374]/72">
+              Tambah tugas baru, atur reward, lalu update status dan catatan dari panel tugas.
+            </div>
+            <button
+              id="open-task-management-button"
+              class="min-h-[44px] rounded-[18px] bg-[#FF8C61] px-4 py-3 text-sm font-semibold text-white shadow-md shadow-[#FF8C61]/25 transition hover:bg-[#f97f53] focus:outline-none focus:ring-4 focus:ring-[#FF8C61]/20"
+              type="button"
+            >
+              Tambah / Kelola Tugas
+            </button>
+          </div>
+
+          <article
+            id="task-management-panel"
+            class="mt-5 hidden rounded-3xl border border-[#2E4374]/10 bg-[#EAF0FB] p-5 shadow-sm shadow-[#2E4374]/6"
+            aria-labelledby="task-management-title"
+          >
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/60">
+                  Manajemen Tugas
+                </p>
+                <h3 id="task-management-title" class="font-heading mt-2 text-xl font-semibold">
+                  Tambah Tugas Mingguan
+                </h3>
+                <p id="task-management-description" class="mt-2 text-sm text-[#2E4374]/72">
+                  Atur judul tugas, reward, status progress, dan catatan pendampingan orang tua.
+                </p>
+              </div>
+              <button
+                id="cancel-task-management-button"
+                class="min-h-[44px] rounded-[18px] border border-[#2E4374]/15 bg-white px-4 py-3 text-sm font-semibold text-[#2E4374]"
+                type="button"
+              >
+                Tutup Panel
+              </button>
+            </div>
+
+            <div class="mt-5 grid gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(280px,0.85fr)]">
+              <form id="task-management-form" class="space-y-4">
+                <input id="task-management-mode" type="hidden" value="add" />
+                <input id="task-management-task-id" type="hidden" value="" />
+
+                <div class="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <label class="mb-2 block text-sm font-semibold text-[#2E4374]" for="task-title-input">
+                      Judul tugas
+                    </label>
+                    <input
+                      id="task-title-input"
+                      class="min-h-[44px] w-full rounded-2xl border border-[#2E4374]/12 bg-white px-4 py-3 text-sm text-[#2E4374] outline-none transition focus:border-[#2E4374]/35 focus:ring-4 focus:ring-[#2E4374]/10"
+                      type="text"
+                      maxlength="60"
+                      placeholder="Contoh: Catat uang saku harian"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label class="mb-2 block text-sm font-semibold text-[#2E4374]" for="task-week-select">
+                      Minggu
+                    </label>
+                    <select
+                      id="task-week-select"
+                      class="min-h-[44px] w-full rounded-2xl border border-[#2E4374]/12 bg-white px-4 py-3 text-sm text-[#2E4374] outline-none transition focus:border-[#2E4374]/35 focus:ring-4 focus:ring-[#2E4374]/10"
+                    >
+                      <option value="1">Minggu 1</option>
+                      <option value="2">Minggu 2</option>
+                      <option value="3">Minggu 3</option>
+                      <option value="4">Minggu 4</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="mb-2 block text-sm font-semibold text-[#2E4374]" for="task-description-input">
+                    Deskripsi tugas
+                  </label>
+                  <textarea
+                    id="task-description-input"
+                    class="min-h-[96px] w-full rounded-2xl border border-[#2E4374]/12 bg-white px-4 py-3 text-sm text-[#2E4374] outline-none transition focus:border-[#2E4374]/35 focus:ring-4 focus:ring-[#2E4374]/10"
+                    maxlength="140"
+                    placeholder="Contoh: Belajar membedakan tabungan dan belanja"
+                  ></textarea>
+                </div>
+
+                <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                  <div>
+                    <label class="mb-2 block text-sm font-semibold text-[#2E4374]" for="task-reward-type-select">
+                      Jenis reward
+                    </label>
+                    <select
+                      id="task-reward-type-select"
+                      class="min-h-[44px] w-full rounded-2xl border border-[#2E4374]/12 bg-white px-4 py-3 text-sm text-[#2E4374] outline-none transition focus:border-[#2E4374]/35 focus:ring-4 focus:ring-[#2E4374]/10"
+                    >
+                      <option value="non-uang">Non-uang</option>
+                      <option value="uang">Uang</option>
+                      <option value="badge">Badge</option>
+                      <option value="badge+uang">Badge + Uang</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="mb-2 block text-sm font-semibold text-[#2E4374]" for="task-reward-amount-input">
+                      Nominal reward
+                    </label>
+                    <input
+                      id="task-reward-amount-input"
+                      class="min-h-[44px] w-full rounded-2xl border border-[#2E4374]/12 bg-white px-4 py-3 text-sm text-[#2E4374] outline-none transition focus:border-[#2E4374]/35 focus:ring-4 focus:ring-[#2E4374]/10"
+                      type="number"
+                      min="0"
+                      step="1000"
+                      value="0"
+                    />
+                  </div>
+
+                  <div class="xl:col-span-2">
+                    <label class="mb-2 block text-sm font-semibold text-[#2E4374]" for="task-reward-label-input">
+                      Label reward
+                    </label>
+                    <input
+                      id="task-reward-label-input"
+                      class="min-h-[44px] w-full rounded-2xl border border-[#2E4374]/12 bg-white px-4 py-3 text-sm text-[#2E4374] outline-none transition focus:border-[#2E4374]/35 focus:ring-4 focus:ring-[#2E4374]/10"
+                      type="text"
+                      maxlength="60"
+                      placeholder="Contoh: Waktu bermain ekstra"
+                    />
+                  </div>
+                </div>
+
+                <div class="grid gap-4 md:grid-cols-[minmax(220px,0.8fr)_minmax(0,1.2fr)]">
+                  <div>
+                    <label class="mb-2 block text-sm font-semibold text-[#2E4374]" for="task-status-select">
+                      Status update
+                    </label>
+                    <select
+                      id="task-status-select"
+                      class="min-h-[44px] w-full rounded-2xl border border-[#2E4374]/12 bg-white px-4 py-3 text-sm text-[#2E4374] outline-none transition focus:border-[#2E4374]/35 focus:ring-4 focus:ring-[#2E4374]/10"
+                    >
+                      <option value="belum selesai">Belum selesai</option>
+                      <option value="berjalan">Berjalan</option>
+                      <option value="selesai">Selesai</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="mb-2 block text-sm font-semibold text-[#2E4374]" for="task-note-input">
+                      Catatan orang tua
+                    </label>
+                    <input
+                      id="task-note-input"
+                      class="min-h-[44px] w-full rounded-2xl border border-[#2E4374]/12 bg-white px-4 py-3 text-sm text-[#2E4374] outline-none transition focus:border-[#2E4374]/35 focus:ring-4 focus:ring-[#2E4374]/10"
+                      type="text"
+                      maxlength="80"
+                      placeholder="Contoh: Masih ada kesempatan"
+                    />
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-3 sm:flex-row">
+                  <button
+                    id="save-task-button"
+                    class="min-h-[44px] rounded-[18px] bg-[#FF8C61] px-5 py-3 text-sm font-semibold text-white shadow-md shadow-[#FF8C61]/25 transition hover:bg-[#f97f53] focus:outline-none focus:ring-4 focus:ring-[#FF8C61]/20"
+                    type="submit"
+                  >
+                    Simpan Tugas
+                  </button>
+                  <button
+                    id="delete-task-button"
+                    class="hidden min-h-[44px] rounded-[18px] border border-[#FF8C61]/20 bg-[#FFF0EA] px-5 py-3 text-sm font-semibold text-[#FF8C61]"
+                    type="button"
+                  >
+                    Hapus Tugas
+                  </button>
+                </div>
+              </form>
+
+              <aside class="rounded-3xl bg-white p-5">
+                <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/60">
+                  Catatan Panel
+                </p>
+                <p id="task-panel-status" class="mt-3 text-sm text-[#2E4374]/75">
+                  Gunakan panel ini untuk menambah tugas baru, mengubah reward, memperbarui status, dan menulis catatan pendampingan.
+                </p>
+                <div class="mt-4 rounded-2xl bg-[#FFF8F0] p-4 text-sm text-[#2E4374]/72">
+                  Reward uang dan badge tetap bisa dikombinasikan, tetapi fokus apresiasi sebaiknya tetap pada usaha anak.
+                </div>
+              </aside>
+            </div>
+          </article>
+
           <div class="mt-5 overflow-hidden rounded-2xl border border-[#2E4374]/8">
             <div class="hidden grid-cols-[1.8fr_1.3fr_1fr_1fr] bg-[#EAF0FB] px-4 py-3 text-sm font-semibold text-[#2E4374] md:grid">
               <div>Tugas</div>
@@ -406,8 +616,18 @@
             <h2 class="font-heading mt-2 text-xl font-semibold">Ringkasan Reward</h2>
             <div class="mt-5 space-y-4">
               <div class="rounded-2xl bg-[#FFF6D9] p-4">
-                <p class="text-sm text-[#2E4374]/70">Reward uang minggu ini</p>
+                <p class="text-sm text-[#2E4374]/70">Total reward uang minggu ini</p>
                 <p id="reward-money" class="mt-2 text-2xl font-semibold text-[#2E4374]">-</p>
+              </div>
+              <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+                <div class="rounded-2xl bg-[#EAFBF8] p-4">
+                  <p class="text-sm text-[#2E4374]/70">Tabungan aman 30%</p>
+                  <p id="reward-save-split" class="mt-2 font-semibold text-[#2E4374]">-</p>
+                </div>
+                <div class="rounded-2xl bg-[#FFF0EA] p-4">
+                  <p class="text-sm text-[#2E4374]/70">Dana belanja untuk goal 70%</p>
+                  <p id="reward-goal-split" class="mt-2 font-semibold text-[#2E4374]">-</p>
+                </div>
               </div>
               <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
                 <div class="rounded-2xl bg-[#EAF0FB] p-4">
@@ -428,16 +648,16 @@
         </aside>
       </section>
 
-      <!-- Goal & Savings Summary + Three Pockets -->
+      <!-- Goals Summary + Financial Composition -->
       <section class="mt-8 grid gap-6 lg:grid-cols-2" aria-label="Goal and pockets section">
         <article class="rounded-3xl bg-white p-5 shadow-sm shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8 sm:p-6">
           <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/60">
-            Goal & Savings
+            Goals
           </p>
           <h2 class="font-heading mt-2 text-xl font-semibold sm:text-2xl">
-            Ringkasan Target Tabungan
+            Ringkasan Goal Anak
           </h2>
-          <div class="mt-5 rounded-3xl bg-[#EAFBF8] p-5">
+          <div class="mt-5 rounded-3xl bg-[#FFF0EA] p-5">
             <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <p class="text-sm text-[#2E4374]/65">Target aktif</p>
@@ -445,70 +665,74 @@
                 <p id="goal-target-date" class="mt-1 text-sm text-[#2E4374]/70">-</p>
               </div>
               <div class="rounded-2xl bg-white px-4 py-3 text-right">
-                <p class="text-sm text-[#2E4374]/65">Terkumpul</p>
-                <p id="goal-current-amount" class="mt-1 text-xl font-semibold text-[#5ECFC1]">-</p>
+                <p class="text-sm text-[#2E4374]/65">Dana goal terkumpul</p>
+                <p id="goal-current-amount" class="mt-1 text-xl font-semibold text-[#FF8C61]">-</p>
               </div>
             </div>
             <div class="mt-5 h-4 rounded-full bg-white">
-              <div id="goal-progress-bar" class="progress-animate h-4 rounded-full bg-[#5ECFC1]" style="width: 0%;"></div>
+              <div id="goal-progress-bar" class="progress-animate h-4 rounded-full bg-[#FF8C61]" style="width: 0%;"></div>
             </div>
             <div class="mt-3 flex items-center justify-between text-sm text-[#2E4374]/70">
               <span id="goal-percent-summary">-</span>
               <span id="goal-remaining">-</span>
             </div>
             <div class="mt-5 rounded-2xl border border-white/80 bg-white/70 p-4 text-sm text-[#2E4374]/75">
-              Milestone berikutnya: Kancil akan tampil di sertifikat saat target
-              ini selesai.
+              Progress goal ini berasal dari dana belanja 70%. Tabungan 30% tetap disimpan sebagai dana aman.
             </div>
           </div>
 
-          <div id="goal-empty-state" class="mt-5 hidden rounded-2xl border border-dashed border-[#2E4374]/20 bg-[#EAFBF8] p-4">
+          <div id="goal-empty-state" class="mt-5 hidden rounded-2xl border border-dashed border-[#FF8C61]/25 bg-[#FFF0EA] p-4">
             <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/55">
               Empty State
             </p>
-            <p class="mt-2 font-semibold">Belum ada target tabungan baru.</p>
+            <p class="mt-2 font-semibold">Belum ada goal anak yang aktif.</p>
             <p class="mt-1 text-sm text-[#2E4374]/70">
-              Kancil siap bantu menabung. Tentukan tujuan berikutnya setelah
-              target aktif selesai.
+              Kancil siap bantu menyusun target baru. Tentukan goal belanja anak berikutnya saat siap.
             </p>
           </div>
         </article>
 
         <article class="rounded-3xl bg-white p-5 shadow-sm shadow-[#2E4374]/8 ring-1 ring-[#2E4374]/8 sm:p-6">
           <p class="text-sm font-medium uppercase tracking-[0.18em] text-[#2E4374]/60">
-            3 Kantong
+            Komposisi Keuangan
           </p>
           <h2 class="font-heading mt-2 text-xl font-semibold sm:text-2xl">
-            Tabung, Belanja, Berbagi
+            Total Reward dan Pembagian
           </h2>
-          <div class="mt-5 grid gap-4 sm:grid-cols-3">
-            <article class="rounded-3xl bg-[#EAFBF8] p-4">
-              <p class="text-sm font-medium text-[#2E4374]/65">Tabung</p>
-              <p id="pocket-save-amount" class="mt-3 text-2xl font-semibold text-[#2E4374]">-</p>
-              <p id="pocket-save-note" class="mt-2 text-sm text-[#2E4374]/70">-</p>
+          <div class="mt-5 space-y-4">
+            <article class="rounded-3xl bg-[#FFF6D9] p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-sm font-medium text-[#2E4374]/65">Total reward seluruh waktu</p>
+                  <p id="finance-total-reward" class="mt-3 text-2xl font-semibold text-[#2E4374]">-</p>
+                </div>
+                <span id="finance-total-percent" class="rounded-full bg-white px-3 py-1 text-sm font-semibold text-[#2E4374]">100%</span>
+              </div>
+              <p id="finance-total-note" class="mt-2 text-sm text-[#2E4374]/70">-</p>
             </article>
-            <article class="rounded-3xl bg-[#FFF0EA] p-4">
-              <p class="text-sm font-medium text-[#2E4374]/65">Belanja</p>
-              <p id="pocket-spend-amount" class="mt-3 text-2xl font-semibold text-[#2E4374]">-</p>
-              <p id="pocket-spend-note" class="mt-2 text-sm text-[#2E4374]/70">-</p>
-            </article>
-            <article class="rounded-3xl bg-[#F2ECFA] p-4">
-              <p class="text-sm font-medium text-[#2E4374]/65">Berbagi</p>
-              <p id="pocket-share-amount" class="mt-3 text-2xl font-semibold text-[#2E4374]">-</p>
-              <p id="pocket-share-note" class="mt-2 text-sm text-[#2E4374]/70">-</p>
-            </article>
-          </div>
 
-          <div class="mt-5">
-            <div class="flex h-4 overflow-hidden rounded-full bg-[#EAF0FB]">
-              <div id="pocket-save-bar" class="progress-animate h-full bg-[#5ECFC1]" style="width: 0%;"></div>
-              <div id="pocket-spend-bar" class="progress-animate h-full bg-[#FF8C61]" style="width: 0%;"></div>
-              <div id="pocket-share-bar" class="progress-animate h-full bg-[#B39DDB]" style="width: 0%;"></div>
-            </div>
-            <div class="mt-3 grid grid-cols-3 gap-3 text-sm text-[#2E4374]/70">
-              <p id="pocket-save-percent">-</p>
-              <p id="pocket-spend-percent">-</p>
-              <p id="pocket-share-percent">-</p>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <article class="rounded-3xl bg-[#FFF0EA] p-4">
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <p class="text-sm font-medium text-[#2E4374]/65">Belanja</p>
+                    <p id="pocket-spend-amount" class="mt-3 text-2xl font-semibold text-[#2E4374]">-</p>
+                  </div>
+                  <span id="pocket-spend-percent" class="rounded-full bg-white px-3 py-1 text-sm font-semibold text-[#2E4374]">-</span>
+                </div>
+                <p id="pocket-spend-note" class="mt-2 text-sm text-[#2E4374]/70">-</p>
+              </article>
+
+              <article class="rounded-3xl bg-[#EAFBF8] p-4">
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <p class="text-sm font-medium text-[#2E4374]/65">Tabungan</p>
+                    <p id="pocket-save-amount" class="mt-3 text-2xl font-semibold text-[#2E4374]">-</p>
+                  </div>
+                  <span id="pocket-save-percent" class="rounded-full bg-white px-3 py-1 text-sm font-semibold text-[#2E4374]">-</span>
+                </div>
+                <p id="pocket-save-note" class="mt-2 text-sm text-[#2E4374]/70">-</p>
+              </article>
             </div>
           </div>
         </article>
@@ -540,7 +764,7 @@
             <div class="mt-3 flex flex-wrap gap-2">
               <span id="badge-unlocked-count" class="rounded-full bg-[#FFF6D9] px-3 py-1 text-sm font-semibold text-[#2E4374]">-</span>
               <span id="badge-locked-count" class="rounded-full bg-[#EAF0FB] px-3 py-1 text-sm font-semibold text-[#2E4374]">-</span>
-              <span id="badge-sharing-count" class="rounded-full bg-[#F2ECFA] px-3 py-1 text-sm font-semibold text-[#2E4374]">-</span>
+              <span id="badge-goal-count" class="rounded-full bg-[#EAFBF8] px-3 py-1 text-sm font-semibold text-[#2E4374]">-</span>
             </div>
           </div>
         </article>
@@ -580,10 +804,6 @@
             <article class="rounded-2xl bg-[#FFF8F0] p-4">
               <p class="text-sm text-[#2E4374]/65">Total belanja</p>
               <p id="monthly-total-spent" class="mt-2 text-2xl font-semibold text-[#FF8C61]">-</p>
-            </article>
-            <article class="rounded-2xl bg-[#FFF8F0] p-4">
-              <p class="text-sm text-[#2E4374]/65">Total berbagi</p>
-              <p id="monthly-total-shared" class="mt-2 text-2xl font-semibold text-[#B39DDB]">-</p>
             </article>
             <article class="rounded-2xl bg-[#FFF8F0] p-4">
               <p class="text-sm text-[#2E4374]/65">Best streak</p>
@@ -633,7 +853,7 @@
             <div class="mt-5 space-y-4">
               <div>
                 <div class="mb-2 flex items-center justify-between text-sm text-[#2E4374]/70">
-                  <span>Tabung</span>
+                  <span>Tabungan</span>
                   <span id="chart-pocket-save">-</span>
                 </div>
                 <div class="h-3 rounded-full bg-white">
@@ -647,15 +867,6 @@
                 </div>
                 <div class="h-3 rounded-full bg-white">
                   <div id="chart-pocket-spend-bar" class="progress-animate h-3 rounded-full bg-[#FF8C61]" style="width: 0%;"></div>
-                </div>
-              </div>
-              <div>
-                <div class="mb-2 flex items-center justify-between text-sm text-[#2E4374]/70">
-                  <span>Berbagi</span>
-                  <span id="chart-pocket-share">-</span>
-                </div>
-                <div class="h-3 rounded-full bg-white">
-                  <div id="chart-pocket-share-bar" class="progress-animate h-3 rounded-full bg-[#B39DDB]" style="width: 0%;"></div>
                 </div>
               </div>
               <div class="rounded-2xl bg-white p-3 text-sm text-[#2E4374]/70">
@@ -768,7 +979,7 @@
               <div class="mt-5 flex items-center justify-between gap-4 border-t border-[#2E4374]/10 pt-4 text-sm text-[#2E4374]/70">
                 <div>
                   <p class="font-semibold text-[#2E4374]">Orang Tua / Pendamping</p>
-                  <p class="mt-1">________________________</p>
+                  <p id="certificate-parent-name" class="mt-1 font-medium text-[#2E4374]">-</p>
                 </div>
                 <div class="text-right">
                   <p class="font-semibold text-[#2E4374]">Kancil Uangku</p>

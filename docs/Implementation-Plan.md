@@ -25,7 +25,8 @@ Membangun frontend rebuild **Kancil Uangku** secara bertahap, terkontrol, dan be
 5. No build tools.
 6. No frontend framework pada fase awal.
 7. No backend.
-8. No authentication.
+8. No real authentication backend.
+9. Frontend-only signup/login simulation diperbolehkan untuk prototype.
 
 ### 2.2 Why This Stack
 
@@ -57,8 +58,10 @@ Membangun frontend rebuild **Kancil Uangku** secara bertahap, terkontrol, dan be
 ```text
 kancil-uangku/
 ├── index.html
+├── login.html
 ├── parent-dashboard.html
 ├── child-view.html
+├── signup.html
 ├── assets/
 │   ├── icons/
 │   ├── mascot/
@@ -115,7 +118,7 @@ Fase ini selesai bila user menyetujui:
 1. Modul utama.
 2. Struktur dashboard.
 3. Child View.
-4. Konsep tiga kantong.
+4. Konsep dua kantong.
 5. Badge/streak.
 6. Visual direction.
 7. Rencana fase implementasi.
@@ -195,8 +198,8 @@ Membangun tampilan statis Parent Dashboard berdasarkan PRD dan UI Guidelines.
 3. Child Selector.
 4. Weekly Task Tracker.
 5. Reward Summary.
-6. Savings Goal Summary.
-7. Three Pockets Overview.
+6. Goals Summary.
+7. Financial Composition Overview.
 8. Badge & Streak Summary.
 9. Monthly Recap.
 10. Chart Section.
@@ -230,8 +233,8 @@ Membangun tampilan statis khusus anak.
 
 1. Welcome Kancil.
 2. This Week Mission.
-3. Savings Goal Visual.
-4. Three Pockets Cards.
+3. Child Goal Visual.
+4. Two Pockets Cards.
 5. Badge Collection.
 6. Streak Display.
 7. Kancil Encouragement Message.
@@ -249,7 +252,7 @@ Membangun tampilan statis khusus anak.
 2. Visual besar dan colorful.
 3. Tidak terlalu banyak teks.
 4. Maskot Kancil terasa hadir.
-5. Progress tabungan mudah dilihat.
+5. Progress goal anak mudah dilihat.
 
 ---
 
@@ -265,7 +268,7 @@ Menambahkan interaksi ringan berbasis dummy data.
 2. Membuat demo data tugas.
 3. Membuat demo data goal.
 4. Membuat demo data kantong.
-5. Membuat demo data badge.
+5. Membuat demo data badge bulanan.
 6. Membuat demo data streak.
 7. Render data ke Parent Dashboard.
 8. Render data ke Child View.
@@ -276,6 +279,7 @@ Menambahkan interaksi ringan berbasis dummy data.
 2. UI populated with realistic sample data.
 3. Basic switching child.
 4. Basic progress rendering.
+5. Local demo versioning untuk refresh data saat skema berubah.
 
 ### Acceptance Criteria
 
@@ -296,8 +300,8 @@ Membuat visualisasi progress sederhana tanpa library berat.
 ### Activities
 
 1. Weekly completion bar chart.
-2. Monthly savings trend.
-3. Three pockets distribution.
+2. Monthly safe-savings trend.
+3. Two pockets distribution.
 4. Goal progress animation.
 5. Badge progress display.
 
@@ -435,22 +439,66 @@ Menutup fase frontend prototype dan menentukan roadmap berikutnya.
 
 ---
 
+## 5.1 Current Execution Status
+
+### Implemented Pages
+
+1. `index.html` — landing page utama.
+2. `signup.html` — create account frontend-only.
+3. `login.html` — login frontend-only.
+4. `parent-dashboard.html` — parent dashboard demo.
+5. `child-view.html` — child view demo.
+
+### Implemented Interaction Status
+
+1. Demo signup validation selesai.
+2. Demo login validation selesai.
+3. Demo session guard untuk dashboard selesai.
+4. Demo logout selesai.
+5. Local child management interaction tersedia.
+6. Export/import dan certificate preview tersedia dalam prototype.
+7. LocalStorage versioning untuk dummy data tersedia dalam prototype.
+8. Landing page CTA, FAQ program, dan public page copy sudah disejajarkan dengan model reward 30/70.
+
+### Phase Snapshot
+
+1. Phase 3 — Parent Dashboard Static Layout: selesai.
+2. Phase 4 — Child View Static Layout: selesai.
+3. Phase 5 — Demo Data & Local Interaction: selesai.
+4. Phase 6 — Progress Visualization & Chart Prototype: selesai.
+5. Phase 7 — Export / Import UI Simulation: selesai.
+6. Phase 8 — Certificate Preview: selesai.
+7. Landing page + signup + login demo flow: selesai.
+
+### Next Step
+
+1. Backend auth sungguhan untuk signup/login.
+2. Integrasi session parent ke data real aplikasi.
+3. Sinkronisasi cloud lintas device.
+4. Validasi import/export yang lebih ketat.
+5. Hardening security untuk input dan local storage.
+
+---
+
 ## 6. MVP Priority
 
 ### 6.1 MVP Must-Have
 
 1. Parent Dashboard.
 2. Child View.
-3. Multi-anak hingga 10.
-4. Weekly task tracker.
-5. Goal savings progress.
-6. Three pockets.
-7. Badge display.
-8. Streak display.
-9. Monthly recap.
-10. Export/import UI.
-11. Kancil mascot usage.
-12. Mobile-first responsive layout.
+3. Landing page.
+4. Signup page frontend-only.
+5. Login page frontend-only.
+6. Multi-anak hingga 10.
+7. Weekly task tracker.
+8. Child goal progress.
+9. Two pockets.
+10. Monthly badge display.
+11. Streak display.
+12. Monthly recap.
+13. Export/import UI.
+14. Kancil mascot usage.
+15. Mobile-first responsive layout.
 
 ### 6.2 Should-Have
 
@@ -473,7 +521,7 @@ Menutup fase frontend prototype dan menentukan roadmap berikutnya.
 ### 6.4 Not Now
 
 1. Backend.
-2. Login.
+2. Real authentication backend.
 3. Cloud sync.
 4. Payment.
 5. AI coach.
@@ -494,13 +542,13 @@ Menutup fase frontend prototype dan menentukan roadmap berikutnya.
 5. TaskTrackerCard.
 6. TaskTable.
 7. RewardSummary.
-8. SavingsGoalCard.
-9. PocketDistributionCard.
+8. GoalsSummaryCard.
+9. FinancialCompositionCard.
 10. BadgeSummaryCard.
 11. StreakCard.
 12. MonthlyRecapCard.
 13. BarChartCard.
-14. SavingsTrendCard.
+14. SafeSavingsTrendCard.
 15. CertificatePreview.
 16. ExportImportPanel.
 17. SettingsPanel.
@@ -514,7 +562,7 @@ Menutup fase frontend prototype dan menentukan roadmap berikutnya.
 4. CoinJarProgress.
 5. PocketCard.
 6. BadgeCard.
-7. BadgeCarousel.
+7. MonthlyBadgeCarousel.
 8. StreakVisual.
 9. KancilMessageBubble.
 10. ChildEmptyState.
@@ -543,7 +591,7 @@ Menutup fase frontend prototype dan menentukan roadmap berikutnya.
 1. Parent Dashboard lengkap.
 2. Child View terpisah.
 3. Goal module tersedia.
-4. Three pockets tersedia.
+4. Two pockets tersedia.
 5. Badge tersedia.
 6. Streak tersedia.
 7. Monthly recap tersedia.
@@ -579,7 +627,10 @@ Menutup fase frontend prototype dan menentukan roadmap berikutnya.
 | Decision | Rationale |
 |---|---|
 | Parent dan Child View dipisah | Kebutuhan orang tua dan anak sangat berbeda |
-| Three pockets menjadi core model | Mengajarkan fungsi uang secara lebih sehat |
+| Two pockets menjadi core model | Mengajarkan fungsi uang secara lebih sehat |
+| Goal anak dibiayai dari Belanja 70% | Memisahkan dana aman dan dana target anak |
+| Badge ditampilkan per bulan aktif | Anak bisa melihat target badge yang sedang berlaku |
+| Sertifikat memakai nama parent dari session | Preview lebih personal dan sesuai login demo |
 | Badge non-materi diprioritaskan | Menghindari motivasi hanya karena uang |
 | Kancil menjadi maskot utama | Menguatkan identitas lokal dan emotional engagement |
 | Tailwind Play CDN dipakai di fase awal | Cepat, ringan, cocok untuk prototype |
