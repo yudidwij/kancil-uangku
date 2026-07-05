@@ -37,6 +37,7 @@ Deliverables yang sudah ada di repo:
 7. `js/app.js`
 8. `js/dashboard.js`
 9. `js/child-view.js`
+10. `database.sql`
 
 ## 3. SOT Alignment Check
 
@@ -57,6 +58,7 @@ Deliverables yang sudah ada di repo:
 13. Responsive mobile-first structure.
 14. Shared demo data rendering.
 15. Landing page, signup, dan login demo flow.
+16. Draft database MariaDB yang memetakan model data frontend.
 
 ### Intentionally Not Implemented Yet
 
@@ -81,6 +83,7 @@ Deliverables yang sudah ada di repo:
 6. Copy cukup aman untuk konteks anak.
 7. Struktur data frontend sudah cukup jelas untuk dipetakan ke persistence nanti.
 8. Landing page sudah selaras dengan model reward 30/70 dan FAQ program.
+9. Draft `database.sql` sudah membantu transisi dari dummy data ke desain CRUD backend.
 
 ### Residual Gaps
 
@@ -99,6 +102,7 @@ Frontend saat ini cukup siap untuk masuk ke tahap persistence ringan, dengan cat
 3. Routing antar experience masih sederhana berbasis file + query param.
 4. Untuk fase berikutnya, persistence paling aman dimulai dari `localStorage simulation` sebelum backend nyata.
 5. Sertifikat sudah memakai nama parent dari session demo aktif.
+6. Draft tabel MariaDB sudah tersedia, tetapi belum divalidasi langsung melalui import ke server target.
 
 Rekomendasi readiness:
 
@@ -135,7 +139,8 @@ Rekomendasi readiness:
 1. Konsolidasikan token visual agar siap dipindah ke system yang lebih scalable.
 2. Tambahkan semantic QA lint manual checklist.
 3. Siapkan dokumentasi mapping data untuk backend nanti.
-4. Tentukan apakah repo ini tetap static-first atau dipindahkan ke stack app pada fase masa depan.
+4. Validasi `database.sql` ke MariaDB target dan rapikan naming field bila diperlukan.
+5. Tentukan apakah repo ini tetap static-first atau dipindahkan ke stack app pada fase masa depan.
 
 ## 7. Recommended Next Development Order
 

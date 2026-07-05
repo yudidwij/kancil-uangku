@@ -2,7 +2,7 @@
 ## Kancil Uangku — Frontend-First Build Plan
 
 **Version:** 1.0 Draft  
-**Status:** Awaiting Approval  
+**Status:** Living document aligned to current prototype  
 **Execution Rule:** No application code before approval  
 **Technology Target:** HTML responsive + Tailwind CSS Play CDN native
 
@@ -62,6 +62,7 @@ kancil-uangku/
 ├── parent-dashboard.html
 ├── child-view.html
 ├── signup.html
+├── database.sql
 ├── assets/
 │   ├── icons/
 │   ├── mascot/
@@ -448,6 +449,7 @@ Menutup fase frontend prototype dan menentukan roadmap berikutnya.
 3. `login.html` — login frontend-only.
 4. `parent-dashboard.html` — parent dashboard demo.
 5. `child-view.html` — child view demo.
+6. `database.sql` — draft schema MariaDB + seed data dummy frontend.
 
 ### Implemented Interaction Status
 
@@ -459,6 +461,7 @@ Menutup fase frontend prototype dan menentukan roadmap berikutnya.
 6. Export/import dan certificate preview tersedia dalam prototype.
 7. LocalStorage versioning untuk dummy data tersedia dalam prototype.
 8. Landing page CTA, FAQ program, dan public page copy sudah disejajarkan dengan model reward 30/70.
+9. Draft database CRUD MariaDB sudah tersedia untuk memetakan data frontend ke backend.
 
 ### Phase Snapshot
 
@@ -477,6 +480,7 @@ Menutup fase frontend prototype dan menentukan roadmap berikutnya.
 3. Sinkronisasi cloud lintas device.
 4. Validasi import/export yang lebih ketat.
 5. Hardening security untuk input dan local storage.
+6. Validasi `database.sql` langsung ke MariaDB dan siapkan query CRUD server-side.
 
 ---
 
@@ -508,6 +512,7 @@ Menutup fase frontend prototype dan menentukan roadmap berikutnya.
 4. Empty states.
 5. LocalStorage simulation.
 6. Child selector persistence.
+7. Database schema validation against real MariaDB instance.
 
 ### 6.3 Could-Have
 
@@ -528,6 +533,7 @@ Menutup fase frontend prototype dan menentukan roadmap berikutnya.
 6. Native app.
 7. Multi-parent account.
 8. Real-time notification.
+9. ORM atau framework backend.
 
 ---
 
@@ -619,6 +625,7 @@ Menutup fase frontend prototype dan menentukan roadmap berikutnya.
 5. Komponen reusable secara pola.
 6. Dummy data terpisah.
 7. Tidak ada backend dependency.
+8. Draft database terdokumentasi dan mengikuti model data frontend.
 
 ---
 

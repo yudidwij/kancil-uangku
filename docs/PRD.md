@@ -159,6 +159,7 @@ Anak dapat:
 17. Static Demo Data / Local Data Simulation.
 18. Tailwind CSS Play CDN Native Implementation Plan.
 19. Frontend-only auth flow simulation for signup/login.
+20. MariaDB/MySQL schema draft for CRUD mapping from frontend data.
 
 ### 6.2 Out of Scope — Current Phase
 
@@ -178,6 +179,7 @@ Catatan:
 1. `signup.html` dan `login.html` saat ini hanya frontend-only.
 2. Data akun dan session disimulasikan melalui browser storage.
 3. Belum ada API, verifikasi akun, atau server-side protection.
+4. `database.sql` adalah draft struktur data backend awal, belum terhubung langsung ke frontend.
 
 ---
 
@@ -557,6 +559,30 @@ Mendorong kebiasaan baik tanpa menjadikan uang sebagai satu-satunya motivasi.
 ---
 
 ## 10. Data Model — Frontend SOT Draft
+
+### 10.0 Backend Mapping Note
+
+Frontend data model saat ini sudah dipetakan juga ke draft MariaDB melalui file `database.sql`.
+
+Tujuan file tersebut:
+
+1. Menjadi referensi awal implementasi CRUD backend.
+2. Menjaga konsistensi field antara frontend dummy data dan tabel database.
+3. Menyediakan seed data demo yang sama dengan prototipe frontend.
+
+Ruang lingkup draft database saat ini:
+
+1. `parent_users`
+2. `parent_sessions`
+3. `children`
+4. `tasks`
+5. `goals`
+6. `pockets`
+7. `badges`
+8. `streaks`
+9. `monthly_recaps`
+10. `child_monthly_task_stats`
+11. `child_savings_trends`
 
 ### 10.1 Child Object
 
